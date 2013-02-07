@@ -1,0 +1,3 @@
+[submodule "vendors/msgpack"]
+	path = vendors/msgpack
+	url = git://github.com/msgpack/msgpack-python.git
