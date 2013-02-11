@@ -18,12 +18,6 @@ def _command2route(command):
     """
     return '%s$' % command
 
-def _route2command(route):
-    """
-    Prepares comamnd name from given route name
-    """
-    return route[0:-1]
-
 
 class Core(object):
     """
