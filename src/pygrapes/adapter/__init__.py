@@ -3,7 +3,6 @@
 __author__ = "mib"
 __date__ = "$2011-01-22 12:02:41$"
 
-from zeromq import Zmq
-from amqp import Amqp
+#from zeromq import Zmq
+#from amqp import Amqp
 
-__all__ = ['Zmq', 'Amqp']
