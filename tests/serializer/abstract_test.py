@@ -16,28 +16,28 @@ import unittest
 ##
 # pygrapes modules
 #
-from pygrapes.serializer import Base
+from pygrapes.serializer.abstract import Abstract
 
 
-class BaseSerializerTestCase(unittest.TestCase):
+class AbstractSerializerTestCase(unittest.TestCase):
 
     def test_method_dumps_exists(self):
-        self.assertTrue(hasattr(Base(), 'dumps'))
+        self.assertTrue(hasattr(Abstract(), 'dumps'))
 
     def test_method_dumps_expects_one_arg(self):
-        self.assertRaises(TypeError, Base().dumps)
+        self.assertRaises(TypeError, Abstract().dumps)
 
     def test_dumps_method_must_be_implemented(self):
-        self.assertRaises(NotImplementedError, partial(Base().dumps, 1))
+        self.assertRaises(NotImplementedError, partial(Abstract().dumps, 1))
 
     def test_method_loads_exists(self):
-        self.assertTrue(hasattr(Base(), 'loads'))
+        self.assertTrue(hasattr(Abstract(), 'loads'))
 
     def test_method_loads_expects_one_arg(self):
-        self.assertRaises(TypeError, Base().loads)
+        self.assertRaises(TypeError, Abstract().loads)
 
     def test_loads_method_must_be_implemented(self):
-        self.assertRaises(NotImplementedError, partial(Base().loads, 1))
+        self.assertRaises(NotImplementedError, partial(Abstract().loads, 1))
 
 
 if "__main__" == __name__:
