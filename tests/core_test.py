@@ -2,28 +2,107 @@
 # -*- coding: utf-8 -*-
 
 ##
-# python standard library
-#
-import unittest
-import mox
-
 # hack for loading modules
+#
 import _path
 _path.fix()
 
 ##
+# python standard library
+#
+from functools import partial
+import unittest
+import mox
+
+##
+# other modules
+#
+from promise import Promise, Deferred
+
+##
 # pygrapes modules
 #
-from pygrapes import Foo
+from pygrapes  import Core, adapter, serializer
 
 
-class FooTestCase(unittest.TestCase):
+class CoreTestCase(unittest.TestCase):
 
     def setUp(self):
         self.mox = mox.Mox()
+        self.adapter = self.mox.CreateMock(adapter.Base)
+        self.serializer = self.mox.CreateMock(serializer.Base)
+        self.core = Core(self.adapter, self.serializer)
 
     def tearDown(self):
         self.mox.UnsetStubs()
+
+    def test_init_expects_adapter(self):
+        self.assertRaises(TypeError, Core)
+
+    def test_init_allows_passing_serializer(self):
+        Core(None, None)
+
+    def test_call_expects_function_name(self):
+        self.assertRaises(TypeError, self.core.call)
+        self.assertTrue(self.core.call('a') is not None)
+
+    def test_send_expects_one_serializable_rgument_1(self):
+        class Foo(object):
+            pass
+
+        for i in xrange(0, 4):
+            self.serializer.dumps(mox.IsA(dict)).AndReturn('')
+            self.adapter.send(mox.IsA(str), mox.IsA(str), \
+                    deferred=mox.IsA(Deferred))
+
+        self.mox.ReplayAll()
+        self.assertFalse(self.core.call('abc') is None)
+        self.assertFalse(self.core.call('abc', [1,2,3]) is None)
+        self.assertFalse(self.core.call('abc', kwargs={'a': 1}) is None)
+        self.assertFalse(self.core.call('abc', [1,2,3], {'a': 1, \
+                'b': [1,2,3], 'c': {'g': 3}}) is None)
+        self.mox.VerifyAll()
+
+    def test_send_returns_promise(self):
+        self.assertTrue(isinstance(self.core.call(''), Promise))
+
+    def test_add_command_required_2_args(self):
+        self.assertRaises(TypeError, self.core.add_command)
+        self.assertRaises(TypeError, partial(self.core.add_command, None))
+        self.assertFalse(self.core.add_command(None, None) is None)
+
+    def test_add_command_returns_instance_of_Core(self):
+        self.assertTrue(isinstance(self.core.add_command(None, None), Core))
+    
+    def test_del_command_required_1_arg(self):
+        self.assertRaises(TypeError, self.core.add_command)
+        self.core.add_command(None, None)
+        self.assertFalse(self.core.del_command(None) is None)
+
+    def test_del_command_returns_instance_of_Core(self):
+        self.core.add_command(None, None)
+        self.assertTrue(isinstance(self.core.del_command(None), Core))
+
+    def test_del_command_requires_command_with_given_name_to_be_added(self):
+        self.assertRaises(KeyError, partial(self.core.del_command, None))
+
+    def test_add_command_calls_adapter(self):
+        self.adapter.attach_listener(mox.IsA(str), mox.IsA(object))
+        self.mox.ReplayAll()
+
+        self.core.add_command(None, None)
+
+        self.mox.VerifyAll()
+
+    def test_del_command_calls_adapter(self):
+        self.adapter.attach_listener(mox.IsA(str), mox.IsA(object))
+        self.adapter.detach_listener(mox.IsA(str))
+        self.mox.ReplayAll()
+
+        self.core.add_command(None, None)
+        self.core.del_command(None)
+
+        self.mox.VerifyAll()
 
 
 if "__main__" == __name__:
