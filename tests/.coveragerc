@@ -10,3 +10,4 @@
 branch = True
 omit =
     */tests/*
+    */vendors/*
