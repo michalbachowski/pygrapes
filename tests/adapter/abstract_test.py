@@ -16,7 +16,7 @@ import unittest
 ##
 # pygrapes modules
 #
-from pygrapes.adapter.abstract import Abstract
+from pygrapes.adapter import Abstract
 
 
 class AbstractAdapterTestCase(unittest.TestCase):
