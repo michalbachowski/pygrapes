@@ -29,8 +29,8 @@ class CoreTestCase(unittest.TestCase):
 
     def setUp(self):
         self.mox = mox.Mox()
-        self.adapter = self.mox.CreateMock(adapter.Base)
-        self.serializer = self.mox.CreateMock(serializer.Base)
+        self.adapter = self.mox.CreateMock(adapter.Abstract)
+        self.serializer = self.mox.CreateMock(serializer.Abstract)
         self.core = Core(self.adapter, self.serializer)
 
     def tearDown(self):
