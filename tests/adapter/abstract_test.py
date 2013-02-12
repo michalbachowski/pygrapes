@@ -24,7 +24,7 @@ class AbstractAdapterTestCase(unittest.TestCase):
     def test_method_send_exists(self):
         self.assertTrue(hasattr(Abstract(), 'send'))
 
-    def test_method_dumps_expects_3_args_1(self):
+    def test_method_send_expects_3_args_1(self):
         self.assertRaises(TypeError, Abstract().send)
 
     def test_method_send_expects_3_args_1(self):
@@ -35,6 +35,10 @@ class AbstractAdapterTestCase(unittest.TestCase):
 
     def test_method_send_expects_3_args_3(self):
         self.assertRaises(TypeError, partial(Abstract().send, None, None))
+
+    def test_method_send_must_be_implemented(self):
+        self.assertRaises(NotImplementedError, \
+                partial(Abstract().send, None, None, None))
     
     def test_method_attach_listener_exists(self):
         self.assertTrue(hasattr(Abstract(), 'attach_listener'))
