@@ -43,14 +43,15 @@ class CoreTestCase(unittest.TestCase):
         Core(None, None)
 
     def test_call_expects_function_name(self):
-        self.adapter.send(mox.IsA(str), mox.IsA(str), deferred=mox.IsA(Deferred)).AndReturn(Deferred())
+        self.adapter.send(mox.IsA(str), mox.IsA(str), \
+                deferred=mox.IsA(Deferred)).AndReturn(Deferred())
         self.serializer.dumps(mox.IsA(dict)).AndReturn('')
         self.mox.ReplayAll()
         self.assertRaises(TypeError, self.core.call)
         self.assertTrue(self.core.call('a') is not None)
         self.mox.VerifyAll()
 
-    def test_send_expects_one_serializable_rgument_1(self):
+    def test_call_expects_one_serializable_rgument_1(self):
         class Foo(object):
             pass
 
@@ -67,7 +68,7 @@ class CoreTestCase(unittest.TestCase):
                 'b': [1,2,3], 'c': {'g': 3}}) is None)
         self.mox.VerifyAll()
 
-    def test_send_returns_promise(self):
+    def test_call_returns_promise(self):
         self.adapter.send(mox.IsA(str), mox.IsA(str), \
                 deferred=mox.IsA(Deferred)).AndReturn(Deferred())
         self.serializer.dumps(mox.IsA(dict)).AndReturn('')
