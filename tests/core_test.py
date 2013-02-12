@@ -43,8 +43,12 @@ class CoreTestCase(unittest.TestCase):
         Core(None, None)
 
     def test_call_expects_function_name(self):
+        self.adapter.send(mox.IsA(str), mox.IsA(str), deferred=mox.IsA(Deferred)).AndReturn(Deferred())
+        self.serializer.dumps(mox.IsA(dict)).AndReturn('')
+        self.mox.ReplayAll()
         self.assertRaises(TypeError, self.core.call)
         self.assertTrue(self.core.call('a') is not None)
+        self.mox.VerifyAll()
 
     def test_send_expects_one_serializable_rgument_1(self):
         class Foo(object):
@@ -53,7 +57,7 @@ class CoreTestCase(unittest.TestCase):
         for i in xrange(0, 4):
             self.serializer.dumps(mox.IsA(dict)).AndReturn('')
             self.adapter.send(mox.IsA(str), mox.IsA(str), \
-                    deferred=mox.IsA(Deferred))
+                    deferred=mox.IsA(Deferred)).AndReturn(Deferred())
 
         self.mox.ReplayAll()
         self.assertFalse(self.core.call('abc') is None)
@@ -64,7 +68,12 @@ class CoreTestCase(unittest.TestCase):
         self.mox.VerifyAll()
 
     def test_send_returns_promise(self):
+        self.adapter.send(mox.IsA(str), mox.IsA(str), \
+                deferred=mox.IsA(Deferred)).AndReturn(Deferred())
+        self.serializer.dumps(mox.IsA(dict)).AndReturn('')
+        self.mox.ReplayAll()
         self.assertTrue(isinstance(self.core.call(''), Promise))
+        self.mox.VerifyAll()
 
     def test_add_command_required_2_args(self):
         self.assertRaises(TypeError, self.core.add_command)
@@ -101,6 +110,36 @@ class CoreTestCase(unittest.TestCase):
 
         self.core.add_command(None, None)
         self.core.del_command(None)
+
+        self.mox.VerifyAll()
+
+    def test_callbacks_are_called_with_all_input_arguments(self):
+        callbacks = {}
+        def al(route, cb):
+            callbacks[route] = cb
+
+        def snd(route, message, deferred):
+            callbacks[route](message, deferred=deferred)
+
+        # serialization
+        obj = {'args': [1, 'a'], 'kwargs': {'c': 'foo', 'd': [1,2,3]}}
+        rep = '{"args": [1, "a"], "kwargs": {"c": "foo", "d": [1,2,3]}}'
+        # adapter
+        self.adapter.attach_listener(mox.IsA(str), mox.IsA(partial))\
+                .WithSideEffects(al)
+        self.serializer.dumps(mox.IsA(dict)).AndReturn(rep)
+        self.adapter.send(mox.IsA(str), rep, deferred=mox.IsA(Deferred))\
+                .WithSideEffects(snd)
+        # callback
+        c = self.mox.CreateMockAnything()
+        c(1, 'a', c='foo', d=[1,2,3], deferred=mox.IsA(Deferred))
+        self.serializer.loads(rep).AndReturn(obj)
+        
+        # test
+        self.mox.ReplayAll()
+
+        self.core.add_command('foo', c)
+        self.core.call('foo', [1, 'a'], {'c': 'foo', 'd': [1,2,3]})
 
         self.mox.VerifyAll()
 
