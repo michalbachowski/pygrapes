@@ -49,13 +49,27 @@ class Core(object):
         return self._serializer.dumps({'args': args or [], \
                 'kwargs': kwargs or {}})
 
+    def _parse_msg(self, message):
+        """
+        Parses message string to local structure
+        """
+        return self._serializer.loads(message)
+
+    def _wrapper(self, callback, message, deferred):
+        """
+        Calls given command with given data
+        """
+        tmp = self._parse_msg(message)
+        tmp['kwargs']['deferred'] = deferred
+        callback(*tmp['args'], **tmp['kwargs'])
+
     def add_command(self, command, callback):
         """
         Attaches given callback to handle calls to given command
         """
         route = _command2route(command)
         self._commands[route] = callback
-        self._adapter.attach_listener(route, callback)
+        self._adapter.attach_listener(route, partial(self._wrapper, callback))
         return self
 
     def del_command(self, command):
