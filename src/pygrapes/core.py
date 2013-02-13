@@ -12,13 +12,6 @@ from promise import Deferred
 __all__ = ['Core']
 
 
-def _command2route(command):
-    """
-    Prepares route name from given command name
-    """
-    return '%s$' % command
-
-
 class Core(object):
     """
     Core class for PyGrapes framework.
@@ -44,7 +37,7 @@ class Core(object):
         Calls given command with given attributes.
         Function should be given as a string.
         """
-        return Deferred(partial(self._adapter.send, _command2route(command), \
+        return Deferred(partial(self._adapter.send, str(command), \
                 self._prepare_msg(args, kwargs))).promise()
 
     def _prepare_msg(self, args, kwargs):
@@ -72,13 +65,13 @@ class Core(object):
         """
         Attaches given callback to handle calls to given command
         """
-        route = _command2route(command)
-        self._adapter.attach_listener(route, partial(self._wrapper, callback))
+        self._adapter.attach_listener(str(command), partial(self._wrapper, \
+                callback))
         return self
 
     def del_command(self, command):
         """
         Removes given command
         """
-        self._adapter.detach_listener(_command2route(command))
+        self._adapter.detach_listener(str(command))
         return self
