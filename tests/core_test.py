@@ -93,8 +93,8 @@ class CoreTestCase(unittest.TestCase):
         self.core.add_command(None, None)
         self.assertTrue(isinstance(self.core.del_command(None), Core))
 
-    def test_del_command_requires_command_with_given_name_to_be_added(self):
-        self.assertRaises(KeyError, partial(self.core.del_command, None))
+    def test_del_command_does_not_require_command_to_be_added(self):
+        self.core.del_command(None)
 
     def test_add_command_calls_adapter(self):
         self.adapter.attach_listener(mox.IsA(str), mox.IsA(object))

@@ -32,7 +32,12 @@ class Core(object):
         """
         self._adapter = adapter
         self._serializer = serializer
-        self._commands = {}
+
+    def serve(self):
+        """
+        Starts core in "server" mode
+        """
+        pass
 
     def call(self, command, args=None, kwargs=None):
         """
@@ -68,7 +73,6 @@ class Core(object):
         Attaches given callback to handle calls to given command
         """
         route = _command2route(command)
-        self._commands[route] = callback
         self._adapter.attach_listener(route, partial(self._wrapper, callback))
         return self
 
@@ -77,5 +81,4 @@ class Core(object):
         Removes given command
         """
         self._adapter.detach_listener(_command2route(command))
-        del self._commands[_command2route(command)]
         return self
