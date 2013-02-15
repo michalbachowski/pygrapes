@@ -7,7 +7,7 @@ from functools import partial, wraps, update_wrapper
 from pygrapes.core import Core
 
 
-__all__ = ['task', 'task_group']
+__all__ = ['task', 'sync_task', 'task_group']
 
 
 _groups = {}
@@ -50,6 +50,31 @@ def task(group_name):
     Wraps handler function in convinient wrapper
     """
     return partial(_func_decorator, group_name)
+
+def sync_task(group_name):
+    """
+    Wraps handler function in convinient wrapper for synchronous tasks
+    """
+    return partial(_sync_func_decorator, group_name)
+
+def _sync_call(function, *args, **kwargs):
+    """
+    Synchronous call
+    """
+    deferred = kwargs['deferred']
+    del kwargs['deferred']
+    deferred.resolve(function(*args, **kwargs))
+
+def _sync_func_decorator(group_name, function):
+    """
+    Real decorator function.
+    Registers new command in group 'Core' instance.
+    """
+    _groups[group_name].add_command(function.__name__, partial(_sync_call, \
+            function))
+    return update_wrapper(partial(_func_wrapper, group_name, \
+            function.__name__), function)
+    
 
 def _func_decorator(group_name, function):
     """

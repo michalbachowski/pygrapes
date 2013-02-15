@@ -26,7 +26,7 @@ from promise import Promise, Deferred
 #
 from pygrapes.core import Core
 from pygrapes.tasks import task, task_group, setup_task_group, serve, \
-        remove_task_group
+        remove_task_group, sync_task
 from pygrapes import adapter
 from pygrapes import serializer
 
@@ -122,6 +122,56 @@ class TasksTestCase(unittest.TestCase):
 
         self.assertEquals(func(1, 2, 3), 'bar')
 
+        self.mox.VerifyAll()
+    
+    def test_sync_task_returns_callable(self):
+        self.assertTrue(callable(sync_task(self.group)))
+
+    def test_sync_task_returns_callable_that_expects_group_to_be_set(self):
+        self.assertRaises(KeyError, partial(sync_task(self.group), None))
+
+    def test_callable_returned_by_sync_task_expects_additional_input(self):
+        task_group(self.group, self.core)
+        self.core.add_command(mox.IsA(str), mox.IsA(object))
+        self.assertRaises(AttributeError, partial(sync_task(self.group), None))
+        self.assertRaises(AttributeError, partial(sync_task(self.group), ''))
+        partial(sync_task(self.group), object)()
+
+    def test_callable_returned_by_sync_task_returns_callable(self):
+        task_group(self.group, self.core)
+        self.core.add_command(mox.IsA(str), mox.IsA(object))
+        self.assertTrue(callable(sync_task(self.group)(object)))
+        
+    def test_sync_task_returns_decorator(self):
+        self.core.add_command(mox.IsA(str), mox.IsA(object))
+        self.mox.ReplayAll()
+
+        # group must be set up
+        task_group(self.group, self.core)
+        @sync_task(self.group)
+        def foo():
+            pass
+
+        self.mox.VerifyAll()
+
+    def test_sync_task_allows_wrapped_functions_to_omit_deferred_input(self):
+        ca = self.mox.CreateMockAnything()
+        ca(6)
+        self.mox.ReplayAll()
+        c = Core(adapter.Local(), serializer.Json())
+
+        task_group(self.group, c)
+        # fetch decorator
+        d = sync_task(self.group)
+        # decorate method foo
+        @d
+        def foo(a,b,c):
+            return a+b+c
+        # call foo
+        p = foo(1,2,3).done(ca)
+
+        # verify promise state
+        self.assertTrue(p.resolved)
         self.mox.VerifyAll()
 
     def test_remove_task_group_expects_one_arg(self):
