@@ -3,18 +3,16 @@
 """
 JSON serializer
 """
-from pygrapes.serializer import Abstract
 import importlib
+from pygrapes.serializer.abstract import Abstract
+from pygrapes.util import not_implemented
 
 # discover JSON parser
 _implementations = [('json', 'loads', 'dumps'), ('cjson', 'decode', 'encode'), \
     ('simplejson', 'loads', 'dumps'), ('django.utils.simplejson', 'loads', \
     'dumps')]
 
-def _encode(s):
-    raise NotImplementedError('A JSON parser is required!')
-
-_decode = _encode
+_decode = _encode = not_implemented('A JSON parser is required!')
 
 for (module, loads, dumps) in _implementations:
     try:
