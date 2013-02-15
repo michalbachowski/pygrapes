@@ -8,8 +8,9 @@ import unittest
 import _path
 _path.fix()
 
-TEST_MODULES = ['core_test', 'tasks_test', 'serializer.abstract_test', \
-        'adapter.abstract_test', 'adapter.local_test']
+TEST_MODULES = ['core_test', 'tasks_test', 'util_test', \
+        'serializer.abstract_test', 'adapter.abstract_test', \
+        'adapter.local_test']
 
 
 def all():
