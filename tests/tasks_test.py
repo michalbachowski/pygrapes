@@ -110,7 +110,7 @@ class TasksTestCase(unittest.TestCase):
 
     def test_calls_to_wrapped_functions_are_forwarded_to_core_instance(self):
         self.core.add_command(mox.IsA(str), mox.IsA(object))
-        self.core.call(mox.IsA(str), 1, 2, 3).AndReturn('bar')
+        self.core.call(mox.IsA(str), (1, 2, 3), {}).AndReturn('bar')
         self.mox.ReplayAll()
 
         # group must be set up

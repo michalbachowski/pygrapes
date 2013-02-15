@@ -65,4 +65,4 @@ def _func_wrapper(group_name, command, *args, **kwargs):
     Real wrapper function.
     Proxies calls to wrapped function to proper 'Core' instance
     """
-    return _groups[group_name].call(command, *args, **kwargs)
+    return _groups[group_name].call(command, args, kwargs)
