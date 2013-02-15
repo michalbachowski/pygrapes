@@ -28,6 +28,7 @@ from pygrapes.core import Core
 from pygrapes.tasks import task, task_group, setup_task_group, serve, \
         remove_task_group
 from pygrapes import adapter
+from pygrapes import serializer
 
 
 class TasksTestCase(unittest.TestCase):
@@ -52,11 +53,12 @@ class TasksTestCase(unittest.TestCase):
 
     def test_setup_task_group_expects_all_arguments_for_Core_instance(self):
         self.assertRaises(TypeError, partial(setup_task_group, self.group))
-        setup_task_group(self.group, adapter.Abstract())
+        self.assertRaises(TypeError, partial(setup_task_group, self.group, \
+                adapter.Abstract()))
 
     def test_setup_task_group_returns_callable(self):
         self.assertTrue(callable(setup_task_group(self.group, \
-                adapter.Abstract())))
+                adapter.Abstract(), serializer.Abstract)))
 
     def test_task_group_expects_1_arg(self):
         self.assertRaises(TypeError, task_group)
