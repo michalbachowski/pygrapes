@@ -21,10 +21,16 @@ def remove_task_group(group_name):
 
 def serve(group_name=None):
     """
-    Starts server for given group
+    Starts server for given group (or all groups)
     """
     [_groups[g].serve() for g in _groups \
             if g == group_name or group_name is None]
+
+def setup_task_group(group_name, *args, **kwargs):
+    """
+    Sets up Core instance for given group
+    """
+    return task_group(group_name, Core(*args, **kwargs))
 
 def task_group(group_name, core=None):
     """

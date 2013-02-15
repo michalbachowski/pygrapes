@@ -25,7 +25,9 @@ from promise import Promise, Deferred
 # pygrapes modules
 #
 from pygrapes.core import Core
-from pygrapes.tasks import task, task_group, serve, remove_task_group
+from pygrapes.tasks import task, task_group, setup_task_group, serve, \
+        remove_task_group
+from pygrapes import adapter
 
 
 class TasksTestCase(unittest.TestCase):
@@ -44,6 +46,17 @@ class TasksTestCase(unittest.TestCase):
             remove_task_group(self.group)
         except:
             pass
+
+    def test_setup_task_group_expects_group_name(self):
+        self.assertTrue(TypeError, setup_task_group)
+
+    def test_setup_task_group_expects_all_arguments_for_Core_instance(self):
+        self.assertRaises(TypeError, partial(setup_task_group, self.group))
+        setup_task_group(self.group, adapter.Abstract())
+
+    def test_setup_task_group_returns_callable(self):
+        self.assertTrue(callable(setup_task_group(self.group, \
+                adapter.Abstract())))
 
     def test_task_group_expects_1_arg(self):
         self.assertRaises(TypeError, task_group)
