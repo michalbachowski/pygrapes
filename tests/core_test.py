@@ -42,6 +42,17 @@ class CoreTestCase(unittest.TestCase):
     def test_init_allows_passing_serializer(self):
         Core(None, None)
 
+    def test_serve_expects_no_arguments(self):
+        self.assertRaises(AttributeError, Core(None, None).serve)
+
+    def test_serve_calls_adapter_serve(self):
+        self.adapter.serve()
+        self.mox.ReplayAll()
+
+        self.core.serve()
+
+        self.mox.VerifyAll()
+
     def test_call_expects_function_name(self):
         self.adapter.send(mox.IsA(str), mox.IsA(str), \
                 deferred=mox.IsA(Deferred)).AndReturn(Deferred())

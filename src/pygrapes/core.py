@@ -30,7 +30,7 @@ class Core(object):
         """
         Starts core in "server" mode
         """
-        pass
+        self._adapter.serve()
 
     def call(self, command, args=None, kwargs=None):
         """
