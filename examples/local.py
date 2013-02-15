@@ -3,18 +3,24 @@
 import _path
 _path.fix()
 
-from pygrapes.tasks import setup_task_group, serve
-from pygrapes.adapter import Local
-from pygrapes.serializer.json import Json
+from pygrapes import Grape, serve
 
+grape = Grape('local', adapter='pygrapes.adapter.Local')
 
-task = setup_task_group('local', adapter=Local(), serializer=Json())
+@grape.task
+def mul(a, b):
+    return a * b
 
-@task
-def add(a, b, deferred):
-    deferred.resolve(a + b)
+@grape.sync
+def add(a, b):
+    return a + b
 
-serve('local')
+@grape.async
+def sub(a, b, deferred):
+    deferred.resolve(a-b)
+
+# called only when current instance should "serve" requests
+serve()
 
 def handler(ret):
     print ret
@@ -22,4 +28,6 @@ def handler(ret):
 def err(*args, **kwargs):
     print (args, kwargs)
 
+mul(2, 3).then(handler, err)
 add(1, 2).then(handler, err)
+sub(2, 3).then(handler, err)
