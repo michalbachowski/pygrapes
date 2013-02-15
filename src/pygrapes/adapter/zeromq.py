@@ -1,31 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
+"""
+Adapters for ZeroMQ backend
+"""
 import zmq
-from pigeon.queue import QueueError, Adapter
-try:
-    from pprint import pformat
-except:
-    def pformat(data):
-        return str(data)
+from pygrapes.adapter.abstract import Abstract
 
 
-class ZmqError(QueueError):
-	pass
-
-
-class UnsupportedSocketTypeError(ZmqError):
-    pass
-
-
-class Zmq(Adapter):
-
-    @classmethod
-    def name(cls):
-        return 'zeromq'
-
+class Zmq(Abstract):
+    """
+    Adapter for vanilla ZeroMQ client library (pyzmq)
+    """
+    
     def __init__(self, type, route='', host='tcp://127.0.0.1:5672', config={}):
-        Adapter.__init__(self)
         self.types = {\
             'pubsub': {\
                 'publish': zmq.PUB,\
@@ -41,7 +28,7 @@ class Zmq(Adapter):
                 'consume': zmq.PULL},\
         }
         if type not in self.types:
-            raise UnsupportedSocketTypeError()
+            raise KeyError('Unsupported type')
         self.type = type
         self.route = route
         self.host = host
@@ -68,6 +55,26 @@ class Zmq(Adapter):
             self.socket.setsockopt(opt, val)
         if 'consume' == mode and 'pubsub' == self.type:
             self.socket.setsockopt(zmq.SUBSCRIBE, self.route)
+
+    def send(self, route, message, deferred):
+        """
+        Sends message to given route. Accepts 'deferred' keyword argument.
+        """
+        pass
+
+    def attach_listener(self, route, callback):
+        """
+        Binds callback with message with given route.
+        When message with given route was received given callback is called
+        with 'deferred' keyword argument that is used to pass back response.
+        """
+        pass
+    
+    def detach_listener(self, route):
+        """
+        Unbinds callback from message with given route.
+        """
+        pass
 
     def consume(self, callback):
         self._init('consume')

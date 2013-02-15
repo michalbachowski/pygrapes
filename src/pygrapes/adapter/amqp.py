@@ -1,15 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import uuid
-import json
-
 from amqplib import client_0_8 as amqp
 
-from pigeon.queue import QueueError, Adapter
-
-
-class AmqpError(QueueError):
-	pass
 
 class Amqp(Adapter):
     amqp			= None
@@ -111,7 +104,30 @@ class Amqp(Adapter):
             exchange	= self.exchange,
             routing_key	= self.route
         )
+    
+    def send(self, route, message, deferred):
+        """
+        Sends message to given route. Accepts 'deferred' keyword argument.
+        """
+        pass
 
-    def ack( self, message ):
+    def attach_listener(self, route, callback):
+        """
+        Binds callback with message with given route.
+        When message with given route was received given callback is called
+        with 'deferred' keyword argument that is used to pass back response.
+        """
+        pass
+    
+    def detach_listener(self, route):
+        """
+        Unbinds callback from message with given route.
+        """
+        pass
+
+    def ack(self, message):
+        """
+        Sends information that message was processed.
+        """
         self._init()
         self.channel.basic_ack(message.delivery_tag)
