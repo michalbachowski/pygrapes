@@ -19,7 +19,7 @@ class Core(object):
     It is responsible for message preperation and passing
     """
 
-    def __init__(self, adapter, serializer=None):
+    def __init__(self, adapter, serializer):
         """
         Object initialization
         """
