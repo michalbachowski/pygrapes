@@ -21,6 +21,16 @@ from pygrapes.adapter import Abstract
 
 class AbstractAdapterTestCase(unittest.TestCase):
     
+    def test_method_serve_exists(self):
+        self.assertTrue(hasattr(Abstract(), 'serve'))
+
+    def test_method_serve_expects_no_args(self):
+        Abstract().serve()
+
+    def test_method_send_may_be_implemented(self):
+        self.assertEquals(Abstract().serve(), None)
+    
+    
     def test_method_send_exists(self):
         self.assertTrue(hasattr(Abstract(), 'send'))
 

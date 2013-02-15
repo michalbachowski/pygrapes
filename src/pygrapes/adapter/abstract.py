@@ -10,6 +10,12 @@ class Abstract(object):
     Base abstract class for all adapters
     """
 
+    def serve(self):
+        """
+        Starts adapter in serving mode
+        """
+        pass
+
     def send(self, route, message, deferred):
         """
         Method to be implemented by all adapters.
