@@ -5,9 +5,10 @@ PyGrapes adapter that allows call local methods.
 Thatks to this in future one can migrate to any other adapter 
 without modifiying internal app code.
 """
+from pygrapes.adapter import Abstract
 
 
-class Local(object):
+class Local(Abstract):
     """
     Local procedure call adapter
     """
