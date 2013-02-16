@@ -25,8 +25,7 @@ from promise import Promise, Deferred
 # pygrapes modules
 #
 from pygrapes.core import Core
-from pygrapes.grape import Grape, serve
-from pygrapes.tasks import remove_task_group, task_group, setup_task_group, task, sync_task
+from pygrapes.grape import Grape, serve, remove_task_group
 from pygrapes import adapter
 from pygrapes import serializer
 
@@ -211,9 +210,9 @@ class GrapeTestCase(unittest.TestCase):
         self.assertRaises(TypeError, remove_task_group)
 
     def test_remove_task_group_removes_predefined_groups(self):
-        task_group(self.group, 'a')
+        Grape(self.group, 'a')
         remove_task_group(self.group)
-        task_group(self.group, 'a')
+        Grape(self.group, 'a')
 
     def test_remove_task_group_raises_key_error_when_group_not_exist(self):
         self.assertRaises(KeyError, partial(remove_task_group, self.group))
@@ -228,7 +227,7 @@ class GrapeTestCase(unittest.TestCase):
         self.core.serve()
         self.mox.ReplayAll()
 
-        task_group(self.group, self.core)
+        Grape(self.group, self.core)
         serve()
 
         self.mox.VerifyAll()
@@ -238,8 +237,8 @@ class GrapeTestCase(unittest.TestCase):
         self.core.serve()
         self.mox.ReplayAll()
 
-        task_group(self.group, self.core)
-        task_group('foo', c)
+        g = Grape(self.group, self.core)
+        g = Grape('foo', c)
         serve(self.group)
 
         self.mox.VerifyAll()
