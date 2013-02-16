@@ -59,9 +59,27 @@ class GrapeTestCase(unittest.TestCase):
     def test_init_allows_serializer_argument(self):
         Grape(self.group, serializer=None)
 
+    def test_init_allows_serializer_to_be_passed_as_string(self):
+        Grape(self.group, serializer='pygrapes.serializer.Abstract')
+
+    def test_init_expects_valid_abstract_before_serializer_is_loaded(self):
+        Grape(self.group, serializer='pygrapes.foo.Bar')
+
+    def test_init_expects_serializer_string_to_be_valid(self):
+        self.assertRaises(ImportError, partial(Grape, self.group, \
+                adapter=adapter.Abstract(), serializer='pygrapes.foo.Bar'))
+
+    def test_init_allows_adapter_to_be_passed_as_string(self):
+        Grape(self.group, adapter='pygrapes.adapter.Abstract')
+
+    def test_init_expects_adapter_string_to_be_valid(self):
+        self.assertRaises(ImportError, partial(Grape, self.group, \
+                adapter='pygrapes.foo.Bar'))
+
     def test_init_omit_group_serialization_if_all_arguments_are_None(self):
         self.assertRaises(KeyError, partial(Grape(self.group, core=None, \
                 adapter=None, serializer=None).task, object))
+    
     def test_init_disallows_group_reinitialization(self):
         Grape(self.group, self.core)
         self.assertRaises(RuntimeError, partial(Grape, self.group, \

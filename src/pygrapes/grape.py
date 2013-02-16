@@ -58,7 +58,7 @@ class Grape(object):
             serializer = import_object(serializer)()
         if serializer is None:
             return
-        self._set_task_group(Core(*args, **kwargs))
+        self._set_task_group(Core(adapter=adapter, serializer=serializer))
 
     def _set_task_group(self, core=None):
         """
