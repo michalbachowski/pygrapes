@@ -29,8 +29,12 @@ class Grape(object):
             return
         if isinstance(adapter, str):
             adapter = self._import(adapter)
+        if adapter is None:
+            return
         if isinstance(serializer, str):
             serializer = self._import(serializer)
+        if serializer is None:
+            return
         setup_task_group(group_name, adapter, serializer)
 
     def _import(self, path):
