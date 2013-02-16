@@ -60,6 +60,9 @@ class GrapeTestCase(unittest.TestCase):
     def test_init_allows_serializer_argument(self):
         Grape(self.group, serializer=None)
 
+    def test_init_omit_group_serialization_if_all_arguments_are_None(self):
+        self.assertRaises(KeyError, partial(Grape(self.group, core=None, \
+                adapter=None, serializer=None).task, object))
     def test_init_disallows_group_reinitialization(self):
         Grape(self.group, self.core)
         self.assertRaises(RuntimeError, partial(Grape, self.group, \
