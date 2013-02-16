@@ -4,6 +4,7 @@
 Module with miscellaneous utilities
 """
 from functools import partial
+import importlib
 
 
 def _not_implemented(err, *args, **kwargs):
@@ -11,3 +12,13 @@ def _not_implemented(err, *args, **kwargs):
 
 def not_implemented(err):
     return partial(_not_implemented, err)
+    
+
+def import_object(self, path):
+    """
+    Imports class given as complete path, eg: foo.bar.baz.ClassName
+    """
+    tmp = path.split('.')
+    module = '.'.join(tmp[0:-1])
+    cls = tmp[-1]
+    return getattr(importlib.import_module(module), cls)
