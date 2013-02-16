@@ -6,7 +6,7 @@ Helper function for easy task handling (defining/calling)
 from functools import partial, wraps, update_wrapper
 import importlib
 from pygrapes.core import Core
-from pygrapes.tasks import sync_task, task, task_group, setup_task_group
+from pygrapes.tasks import sync_task, task, task_group, setup_task_group, serve
 
 
 __all__ = ['Grape']
