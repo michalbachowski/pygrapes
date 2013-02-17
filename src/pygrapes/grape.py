@@ -3,6 +3,8 @@
 """
 Helper function for easy task handling (defining/calling)
 """
+import sys
+import traceback
 from functools import partial, wraps, update_wrapper
 from pygrapes.util import import_object
 from pygrapes.core import Core
@@ -112,7 +114,18 @@ class Grape(object):
         del kwargs['deferred']
         try:
             r = function(*args, **kwargs)
-        except e:
-            deferred.reject({'exception': e})
+        except Exception, e:
+            deferred.reject(exception=self.format_exception(e))
         else:
             deferred.resolve(r)
+
+    def format_exception(self, exception, tb=None):
+        """
+        Formats exception to standarized format accepted by PyGrapes
+        """
+        if tb:
+            exc_traceback = tb
+        else:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
+        return {'message': exception.message, 'args': exception.args, \
+                'traceback': traceback.extract_tb(exc_traceback)}

@@ -11,6 +11,7 @@ _path.fix()
 # python standard library
 #
 from functools import partial
+import sys
 import unittest
 import mox
 import random
@@ -153,6 +154,25 @@ class GrapeTestCase(unittest.TestCase):
         self.assertTrue(p.resolved)
         self.mox.VerifyAll()
 
+    def test_task_takes_care_of_exceptions(self):
+        callback = self.mox.CreateMockAnything()
+        callback(exception=mox.IsA(dict))
+        self.mox.ReplayAll()
+        c = Core(adapter.Local(), serializer.Json())
+
+        g = Grape(self.group, c)
+        # decorate method foo
+        @g.task
+        def foo(a,b,c):
+            raise RuntimeError('bar')
+        # call foo
+        p = foo(1,2,3).fail(callback).done(callback)
+
+        # verify promise state
+        self.assertFalse(p.resolved)
+        self.assertTrue(p.rejected)
+        self.mox.VerifyAll()
+
     def test_async_expects_argument(self):
         self.assertRaises(TypeError, Grape(self.group).async)
 
@@ -261,6 +281,52 @@ class GrapeTestCase(unittest.TestCase):
 
         self.mox.VerifyAll()
         remove_task_group('foo')
+
+    def test_format_exception_expects_1_arg(self):
+        self.assertRaises(TypeError, Grape(self.group).format_exception)
+
+    def test_format_exception_allows_2_args(self):
+        self.assertRaises(AttributeError, \
+                partial(Grape(self.group).format_exception, None, None))
+
+    def test_format_exception_expects_exception_as_input(self):
+        e = self.mox.CreateMockAnything()
+        e.message = 'foo'
+        e.args = 'bar'
+        self.mox.ReplayAll()
+        fe = Grape(self.group).format_exception(e)
+        self.assertEquals(fe['message'], e.message)
+        self.assertEquals(fe['args'], e.args)
+        self.assertTrue(isinstance(fe['traceback'], list))
+        self.mox.VerifyAll()
+
+    def test_format_exception_allows_to_pass_traceback(self):
+        e = self.mox.CreateMockAnything()
+        e.message = 'foo'
+        e.args = 'bar'
+        try:
+            raise RuntimeError('a')
+        except:
+            pass
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+
+        self.mox.ReplayAll()
+        fe = Grape(self.group).format_exception(e, exc_traceback)
+        self.assertEquals(fe['message'], e.message)
+        self.assertEquals(fe['args'], e.args)
+        self.assertTrue(isinstance(fe['traceback'], list))
+        self.assertTrue(len(fe['traceback'])>0)
+        self.mox.VerifyAll()
+
+    def test_format_exception_expects_traceback_to_be_valid(self):
+        e = self.mox.CreateMockAnything()
+        e.message = 'foo'
+        e.args = 'bar'
+
+        self.mox.ReplayAll()
+        self.assertRaises(AttributeError, partial(
+                Grape(self.group).format_exception, e, 'f'))
+        self.mox.VerifyAll()
 
 
 if "__main__" == __name__:
