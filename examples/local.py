@@ -19,15 +19,16 @@ def add(a, b):
 def sub(a, b, deferred):
     deferred.resolve(a-b)
 
-# called only when current instance should "serve" requests
-serve()
+def main():
+    def handler(ret):
+        print ret
 
-def handler(ret):
-    print ret
+    def err(*args, **kwargs):
+        print (args, kwargs)
 
-def err(*args, **kwargs):
-    print (args, kwargs)
+    mul(2, 3).then(handler, err)
+    add(1, 2).then(handler, err)
+    sub(2, 3).then(handler, err)
 
-mul(2, 3).then(handler, err)
-add(1, 2).then(handler, err)
-sub(2, 3).then(handler, err)
+if '__main__' == __name__:
+    main()
