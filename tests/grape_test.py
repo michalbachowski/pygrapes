@@ -70,6 +70,10 @@ class GrapeTestCase(unittest.TestCase):
         self.assertRaises(ImportError, partial(Grape, self.group, \
                 adapter=adapter.Abstract(), serializer='pygrapes.foo.Bar'))
 
+    def test_init_expects_serializer_string_to_be_not_None(self):
+        self.assertRaises(KeyError, partial(Grape(self.group,
+                adapter=adapter.Abstract(), serializer=None).task, object))
+
     def test_init_allows_adapter_to_be_passed_as_string(self):
         Grape(self.group, adapter='pygrapes.adapter.Abstract')
 
