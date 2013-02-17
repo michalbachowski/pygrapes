@@ -66,12 +66,9 @@ class Grape(object):
         """
         Initializes task group.
         """
-        if core is not None:
-            if self._group in _groups:
-                raise RuntimeError('Couldn`t reinitialize task group')
-            _groups[self._group] = core
-        elif self._group not in _groups:
-            raise RuntimeError('Couldn`t use uninitialized group')
+        if self._group in _groups:
+            raise RuntimeError('Couldn`t reinitialize task group')
+        _groups[self._group] = core
 
     def _wrap(self, function):
         """
