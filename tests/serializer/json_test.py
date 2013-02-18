@@ -36,7 +36,7 @@ class JsonSerializerTestCase(unittest.TestCase):
     def test_method_loads_expects_one_arg(self):
         self.assertRaises(TypeError, Json().loads)
 
-    def test_dumps_return_object(self):
+    def test_loads_return_object(self):
         self.assertTrue(isinstance(Json().loads('[1,3,2]'), list))
 
 
