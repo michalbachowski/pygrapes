@@ -16,6 +16,12 @@ class Abstract(object):
         """
         pass
 
+    def connect(self):
+        """
+        Starts adapter in client mode
+        """
+        pass
+
     def send(self, route, message, deferred):
         """
         Method to be implemented by all adapters.

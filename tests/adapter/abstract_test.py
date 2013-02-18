@@ -29,8 +29,7 @@ class AbstractAdapterTestCase(unittest.TestCase):
 
     def test_method_send_may_be_implemented(self):
         self.assertEquals(Abstract().serve(), None)
-    
-    
+ 
     def test_method_send_exists(self):
         self.assertTrue(hasattr(Abstract(), 'send'))
 
@@ -81,6 +80,12 @@ class AbstractAdapterTestCase(unittest.TestCase):
 
     def test_ack_method_does_not_have_to_be_implemented(self):
         self.assertTrue(Abstract().ack(None) is None)
+
+    def test_method_connect_exists(self):
+        self.assertTrue(hasattr(Abstract(), 'connect'))
+
+    def test_connect_method_does_not_have_to_be_implemented(self):
+        self.assertTrue(Abstract().connect() is None)
 
 
 if "__main__" == __name__:

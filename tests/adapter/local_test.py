@@ -60,6 +60,13 @@ class LocalAdapterTestCase(unittest.TestCase):
 
         self.mox.VerifyAll()
 
+    def test_implements_all_methods_from_abstract_class(self):
+        self.assertTrue(hasattr(Local(), 'serve'))
+        self.assertTrue(hasattr(Local(), 'connect'))
+        self.assertTrue(hasattr(Local(), 'send'))
+        self.assertTrue(hasattr(Local(), 'ack'))
+        self.assertTrue(hasattr(Local(), 'attach_listener'))
+        self.assertTrue(hasattr(Local(), 'detach_listener'))
 
 if "__main__" == __name__:
     unittest.main()
