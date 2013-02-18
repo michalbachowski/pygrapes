@@ -25,18 +25,37 @@ class Core(object):
         """
         self._adapter = adapter
         self._serializer = serializer
+        self._serve = False
+        self._connect = False
 
     def serve(self):
         """
         Starts core in "server" mode
         """
+        if self._connect:
+            raise RuntimeError('Could not use server mode while in client mode')
+        if self._serve:
+            return
         self._adapter.serve()
+        self._serve = True
+
+    def connect(self):
+        """
+        Starts core in "client" mode
+        """
+        if self._serve:
+            raise RuntimeError('Could not use client mode while in serve mode')
+        if self._connect:
+            return
+        self._adapter.connect()
+        self._connect = True
 
     def call(self, command, args=None, kwargs=None):
         """
         Calls given command with given attributes.
         Function should be given as a string.
         """
+        self.connect()
         return Deferred(partial(self._adapter.send, str(command), \
                 self._prepare_msg(args, kwargs))).promise()
 

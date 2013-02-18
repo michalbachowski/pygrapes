@@ -53,7 +53,45 @@ class CoreTestCase(unittest.TestCase):
 
         self.mox.VerifyAll()
 
+    def test_serve_cannot_be_called_after_connect(self):
+        self.core.connect()
+        self.assertRaises(RuntimeError, self.core.serve)
+    
+    def test_serve_called_sequentially_does_nothing(self):
+        self.adapter.serve()
+        self.mox.ReplayAll()
+        
+        self.core.serve()
+        self.core.serve()
+
+        self.mox.VerifyAll()
+
+    def test_connect_expects_no_arguments(self):
+        self.assertRaises(AttributeError, Core(None, None).connect)
+
+    def test_connect_calls_adapter_connect(self):
+        self.adapter.connect()
+        self.mox.ReplayAll()
+
+        self.core.connect()
+
+        self.mox.VerifyAll()
+
+    def test_connect_cannot_be_called_after_serve(self):
+        self.core.serve()
+        self.assertRaises(RuntimeError, self.core.connect)
+
+    def test_connect_called_sequentially_does_nothing(self):
+        self.adapter.connect()
+        self.mox.ReplayAll()
+
+        self.core.connect()
+        self.core.connect()
+        
+        self.mox.VerifyAll()
+
     def test_call_expects_function_name(self):
+        self.adapter.connect()
         self.adapter.send(mox.IsA(str), mox.IsA(str), \
                 deferred=mox.IsA(Deferred)).AndReturn(Deferred())
         self.serializer.dumps(mox.IsA(dict)).AndReturn('')
@@ -66,6 +104,7 @@ class CoreTestCase(unittest.TestCase):
         class Foo(object):
             pass
 
+        self.adapter.connect()
         for i in xrange(0, 4):
             self.serializer.dumps(mox.IsA(dict)).AndReturn('')
             self.adapter.send(mox.IsA(str), mox.IsA(str), \
@@ -80,6 +119,7 @@ class CoreTestCase(unittest.TestCase):
         self.mox.VerifyAll()
 
     def test_call_returns_promise(self):
+        self.adapter.connect()
         self.adapter.send(mox.IsA(str), mox.IsA(str), \
                 deferred=mox.IsA(Deferred)).AndReturn(Deferred())
         self.serializer.dumps(mox.IsA(dict)).AndReturn('')
@@ -140,6 +180,7 @@ class CoreTestCase(unittest.TestCase):
         self.adapter.attach_listener(mox.IsA(str), mox.IsA(partial))\
                 .WithSideEffects(al)
         self.serializer.dumps(mox.IsA(dict)).AndReturn(rep)
+        self.adapter.connect()
         self.adapter.send(mox.IsA(str), rep, deferred=mox.IsA(Deferred))\
                 .WithSideEffects(snd)
         # callback
