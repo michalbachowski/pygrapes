@@ -16,7 +16,7 @@ import unittest
 ##
 # pygrapes modules
 #
-from pygrapes.serializer.msgpack import MsgPack
+from pygrapes.serializer import MsgPack
 
 
 class MsgPackSerializerTestCase(unittest.TestCase):

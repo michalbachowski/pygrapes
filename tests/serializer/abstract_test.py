@@ -16,7 +16,7 @@ import unittest
 ##
 # pygrapes modules
 #
-from pygrapes.serializer.abstract import Abstract
+from pygrapes.serializer import Abstract
 
 
 class AbstractSerializerTestCase(unittest.TestCase):

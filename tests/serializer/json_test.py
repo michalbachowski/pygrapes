@@ -16,7 +16,7 @@ import unittest
 ##
 # pygrapes modules
 #
-from pygrapes.serializer.json import Json
+from pygrapes.serializer import Json
 
 
 class JsonSerializerTestCase(unittest.TestCase):
