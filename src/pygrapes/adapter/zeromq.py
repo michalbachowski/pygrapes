@@ -4,7 +4,7 @@
 Adapters for ZeroMQ backend
 """
 import zmq
-from pypromise import when
+from promise import when
 from pygrapes.adapter import Abstract
 
 
