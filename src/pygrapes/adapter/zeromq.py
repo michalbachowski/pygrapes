@@ -28,7 +28,7 @@ class Zmq(Abstract):
         if self._socket is not None:
             return
         self._socket = self._context.socket(zmq.XREP)
-        self._socket.bind(self.host)
+        self._socket.bind(self._host)
         
         try:
             while True:
