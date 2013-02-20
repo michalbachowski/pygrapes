@@ -11,12 +11,12 @@ class Zmq(Abstract):
     """
     Adapter for vanilla ZeroMQ client library (pyzmq)
     """
-    
-    def __init__(self, host='tcp://127.0.0.1:5672', config=None):
+
+    def __init__(self, host='tcp://127.0.0.1:5672', config=None, context=None):
         self._host = host
         self._config = config or {}
 
-        self._context = zmq.Context()
+        self._context = context or zmq.Context()
         self._socket = None
         self._listeners = {}
 
@@ -28,7 +28,7 @@ class Zmq(Abstract):
             return
         self._socket = self._context.socket(zmq.REP)
         self._socket.bind(self._host)
-        
+
         try:
             while True:
                 route = self._socket.recv()
@@ -69,7 +69,7 @@ class Zmq(Abstract):
         with 'deferred' keyword argument that is used to pass back response.
         """
         self._listeners[route] = callback
-    
+
     def detach_listener(self, route):
         """
         Unbinds callback from message with given route.
