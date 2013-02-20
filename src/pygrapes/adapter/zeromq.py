@@ -47,9 +47,9 @@ class Zmq(Abstract):
             return
         self._socket = self._context.socket(zmq.XREQ)
         self._socket.connect(self._host)
-        self._config()
+        self._configure()
 
-    def _config(self):
+    def _configure(self):
         """
         Sets configuration for socket
         """
