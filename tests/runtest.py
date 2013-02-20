@@ -11,7 +11,7 @@ _path.fix()
 TEST_MODULES = ['core_test', 'grape_test', 'util_test', \
         'serializer.abstract_test', 'serializer.json_test', \
         'serializer.msgpack_test', 'adapter.abstract_test', \
-        'adapter.local_test']
+        'adapter.local_test', 'adapter.zeromq_test']
 
 
 def all():
