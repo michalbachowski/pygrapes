@@ -56,8 +56,20 @@ class Core(object):
         Function should be given as a string.
         """
         self.connect()
-        return Deferred(partial(self._adapter.send, str(command), \
-                self._prepare_msg(args, kwargs))).promise()
+        d2 = Deferred()
+
+        d1 = Deferred(partial(self._adapter.send, str(command), \
+                self._prepare_msg(args, kwargs)))\
+            .then(partial(self._unserialize, d2.resolve), 
+                    partial(self._unserialize, d2.reject))
+        return d2.promise()
+
+    def _unserialize(self, callback, message):
+        """
+        Unserializes given message and calls given callback
+        """
+        tmp = self._parse_msg(message)
+        callback(*tmp['args'], **tmp['kwargs'])
 
     def _prepare_msg(self, args, kwargs):
         """
@@ -72,13 +84,23 @@ class Core(object):
         """
         return self._serializer.loads(message)
 
-    def _wrapper(self, callback, message, deferred):
+    def _wrapper(self, callback, message):
         """
         Calls given command with given data
         """
         tmp = self._parse_msg(message)
-        tmp['kwargs']['deferred'] = deferred
-        callback(*tmp['args'], **tmp['kwargs'])
+        d2 = Deferred()
+        d1 = Deferred(partial(callback, *tmp['args'], **tmp['kwargs']))\
+                .then(partial(self._serialize, d2.resolve), 
+                        partial(self._serialize, d2.reject))
+        return d2.promise()
+
+    def _serialize(self, callback, *args, **kwargs):
+        """
+        Serializes given arguments and calls callback
+        """
+        callback(self._prepare_msg(args, kwargs))
+
 
     def add_command(self, command, callback):
         """

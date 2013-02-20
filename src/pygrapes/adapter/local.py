@@ -23,7 +23,7 @@ class Local(Abstract):
         """
         Sends message to given route. Accepts 'deferred' keyword argument.
         """
-        self._listeners[route](message, deferred=deferred)
+        self._listeners[route](message).then(deferred.resolve, deferred.reject)
 
     def attach_listener(self, route, callback):
         """

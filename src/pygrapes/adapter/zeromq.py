@@ -4,7 +4,6 @@
 Adapters for ZeroMQ backend
 """
 import zmq
-from promise import when
 from pygrapes.adapter import Abstract
 
 
@@ -34,8 +33,7 @@ class Zmq(Abstract):
             while True:
                 route = self._socket.recv()
                 message = self._socket.recv()
-                when(self._listeners[route](message)).done(
-                        lambda m: self._socket.send(m))
+                self._listeners[route](message).done(self._socket.send)
         except KeyboardInterrupt:
             raise
 

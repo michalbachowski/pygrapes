@@ -171,7 +171,7 @@ class CoreTestCase(unittest.TestCase):
             callbacks[route] = cb
 
         def snd(route, message, deferred):
-            callbacks[route](message, deferred=deferred)
+            callbacks[route](message)
 
         # serialization
         obj = {'args': [1, 'a'], 'kwargs': {'c': 'foo', 'd': [1,2,3]}}

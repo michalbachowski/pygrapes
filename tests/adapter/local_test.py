@@ -15,6 +15,9 @@ import unittest
 import mox
 
 ##
+# promise modules
+from promise import Deferred
+##
 # pygrapes modules
 #
 from pygrapes.adapter import Local
@@ -24,6 +27,7 @@ class LocalAdapterTestCase(unittest.TestCase):
     
     def setUp(self):
         self.mox = mox.Mox()
+        self.deferred = self.mox.CreateMock(Deferred)
 
     def tearDown(self):
         self.mox.UnsetStubs()
@@ -38,25 +42,45 @@ class LocalAdapterTestCase(unittest.TestCase):
 
     def test_send_calls_attached_callback(self):
         c = self.mox.CreateMockAnything()
-        c('asd', deferred='foo')
+        c('asd').AndReturn(self.deferred)
+        self.deferred.then(mox.IsA(object), mox.IsA(object))
+        d = self.mox.CreateMock(Deferred)
         self.mox.ReplayAll()
 
         l = Local()
         l.attach_listener('foo', c)
-        l.send('foo', 'asd', 'foo')
+        l.send('foo', 'asd', d)
 
         self.mox.VerifyAll()
 
     def test_attach_listener_overrides_handlers(self):
         c_not_called = self.mox.CreateMockAnything()
         c = self.mox.CreateMockAnything()
-        c('asd', deferred='foo')
+        c('asd').AndReturn(self.deferred)
+        self.deferred.then(mox.IsA(object), mox.IsA(object))
+        d = self.mox.CreateMock(Deferred)
         self.mox.ReplayAll()
 
         l = Local()
         l.attach_listener('foo', c_not_called)
         l.attach_listener('foo', c)
-        l.send('foo', 'asd', 'foo')
+        l.send('foo', 'asd', d)
+
+        self.mox.VerifyAll()
+
+    def test_send_expects_deferred(self):
+        c = self.mox.CreateMockAnything()
+        def se(done, fail):
+            done('asd')
+        c('asd').AndReturn(self.deferred)
+        self.deferred.then(mox.IsA(object), mox.IsA(object)).WithSideEffects(se)
+        d = self.mox.CreateMock(Deferred)
+        d.resolve(mox.IsA(str))
+        self.mox.ReplayAll()
+
+        l = Local()
+        l.attach_listener('foo', c)
+        l.send('foo', 'asd', d)
 
         self.mox.VerifyAll()
 
