@@ -26,7 +26,7 @@ class Zmq(Abstract):
         """
         if self._socket is not None:
             return
-        self._socket = self._context.socket(zmq.XREP)
+        self._socket = self._context.socket(zmq.REP)
         self._socket.bind(self._host)
         
         try:
@@ -43,7 +43,7 @@ class Zmq(Abstract):
         """
         if self._socket is not None:
             return
-        self._socket = self._context.socket(zmq.XREQ)
+        self._socket = self._context.socket(zmq.REQ)
         self._socket.connect(self._host)
         self._configure()
 
