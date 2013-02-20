@@ -61,7 +61,7 @@ class Zmq(Abstract):
         Sends message to given route. Accepts 'deferred' keyword argument.
         """
         self._socket.send(route, zmq.SNDMORE)
-        self._socket.send(msg)
+        self._socket.send(message)
         deferred.resolve(self._socket.recv())
 
     def attach_listener(self, route, callback):
