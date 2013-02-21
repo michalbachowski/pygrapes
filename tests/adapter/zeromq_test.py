@@ -55,22 +55,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
 
     def test_init_allows_to_pass_context_arg(self):
         self.assertFalse(Zmq(context='foo') is None)
-
-    def test_attach_listener_expects_2_args(self):
-        self.assertRaises(TypeError, Zmq().attach_listener)
-        self.assertRaises(TypeError, partial(Zmq().attach_listener, None))
-        self.assertTrue(Zmq().attach_listener(None, None) is None)
-
-    def test_detach_listener_expects_1_arg(self):
-        self.assertRaises(TypeError, Zmq().detach_listener)
-        self.assertRaises(KeyError, partial(Zmq().detach_listener, None))
-
-    def test_detach_listener_expects_route_to_be_previously_attached(self):
-        z = Zmq()
-        self.assertRaises(KeyError, partial(z.detach_listener, None))
-        z.attach_listener('foo', None)
-        self.assertTrue(z.detach_listener('foo') is None)
-
+    
     def test_connects_expects_valid_context_instance(self):
         self.assertRaises(TypeError, Zmq().connect())
 

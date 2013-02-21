@@ -18,7 +18,7 @@ class Zmq(Abstract):
 
         self._context = context or zmq.Context()
         self._socket = None
-        self._listeners = {}
+        Abstract.__init__(self)
 
     def serve(self):
         """
@@ -62,17 +62,3 @@ class Zmq(Abstract):
         self._socket.send(route, zmq.SNDMORE)
         self._socket.send(message)
         return deferred.resolve(self._socket.recv())
-
-    def attach_listener(self, route, callback):
-        """
-        Binds callback with message with given route.
-        When message with given route was received given callback is called
-        with 'deferred' keyword argument that is used to pass back response.
-        """
-        self._listeners[route] = callback
-
-    def detach_listener(self, route):
-        """
-        Unbinds callback from message with given route.
-        """
-        del self._listeners[route]
