@@ -3,6 +3,7 @@
 
 # hack for loading modules
 import _path
+import collections
 _path.fix()
 
 ##
@@ -30,15 +31,15 @@ class UtilTestCase(unittest.TestCase):
         self.assertRaises(TypeError, not_implemented)
 
     def test_not_implemented_returns_callable(self):
-        self.assertTrue(callable(not_implemented(None)))
+        self.assertTrue(isinstance(not_implemented(None), collections.Callable))
 
     def test_not_implemented_callable_raises_runtime_error(self):
         self.assertRaises(RuntimeError, not_implemented(None))
-    
+
     def test_not_implemented_callable_raises_exception_with_given_message(self):
         try:
             not_implemented('foo')()
-        except RuntimeError, e:
+        except RuntimeError as e:
             msg = e.message
         else:
             msg = 'bar'

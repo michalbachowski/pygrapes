@@ -55,7 +55,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
 
     def test_init_allows_to_pass_context_arg(self):
         self.assertFalse(Zmq(context='foo') is None)
-    
+
     def test_connects_expects_valid_context_instance(self):
         self.assertRaises(TypeError, Zmq().connect())
 
@@ -74,7 +74,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
         self.assertTrue(isinstance(Zmq(context=self.ctx).connect(), Zmq))
 
         self.mox.VerifyAll()
-    
+
     def test_connect_will_not_instantinate_socket_twice(self):
         self.setUpConnect()
         self.mox.ReplayAll()
@@ -89,7 +89,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
         self.setUpConnect()
         self.mox.ReplayAll()
 
-        self.assertRaises(AttributeError, 
+        self.assertRaises(AttributeError,
                 Zmq(context=self.ctx, config='a').connect)
 
         self.mox.VerifyAll()
@@ -134,7 +134,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
         self.deferred.resolve('resp')
         self.mox.ReplayAll()
 
-        Zmq(context=self.ctx).connect().send('route', 'message', 
+        Zmq(context=self.ctx).connect().send('route', 'message',
                 self.deferred)
 
         self.mox.VerifyAll()
@@ -146,7 +146,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
         z = Zmq(context=self.ctx)
         z.connect()
         self.assertTrue(z.serve() is None)
-        
+
         self.mox.VerifyAll()
 
     def test_serve_will_work_until_exception_raises(self):

@@ -102,7 +102,7 @@ class Grape(object):
         _groups[self._group].add_command(function.__name__, \
                 partial(self._sync_call, function))
         return self._wrap(function)
-    
+
     def _sync_call(self, function, *args, **kwargs):
         """
         Synchronous call. Handles 'deferred' object for wrapped function
@@ -111,7 +111,7 @@ class Grape(object):
         del kwargs['deferred']
         try:
             r = function(*args, **kwargs)
-        except Exception, e:
+        except Exception as e:
             deferred.reject(exception=self.format_exception(e))
         else:
             deferred.resolve(r)
