@@ -42,7 +42,7 @@ class Zmq(Abstract):
         Starts adapter in client mode
         """
         if self._socket is not None:
-            return
+            return self
         self._socket = self._context.socket(zmq.REQ)
         self._socket.connect(self._host)
         self._configure()
