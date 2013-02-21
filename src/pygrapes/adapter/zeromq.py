@@ -46,6 +46,7 @@ class Zmq(Abstract):
         self._socket = self._context.socket(zmq.REQ)
         self._socket.connect(self._host)
         self._configure()
+        return self
 
     def _configure(self):
         """
