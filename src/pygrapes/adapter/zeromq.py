@@ -52,7 +52,7 @@ class Zmq(Abstract):
         Sets configuration for socket
         """
         for (opt, val) in self._config.iteritems():
-            self.socket.setsockopt(opt, val)
+            self._socket.setsockopt(opt, val)
 
     def send(self, route, message, deferred):
         """
