@@ -56,11 +56,11 @@ class CoreTestCase(unittest.TestCase):
     def test_serve_cannot_be_called_after_connect(self):
         self.core.connect()
         self.assertRaises(RuntimeError, self.core.serve)
-    
+
     def test_serve_called_sequentially_does_nothing(self):
         self.adapter.serve()
         self.mox.ReplayAll()
-        
+
         self.core.serve()
         self.core.serve()
 
@@ -87,7 +87,7 @@ class CoreTestCase(unittest.TestCase):
 
         self.core.connect()
         self.core.connect()
-        
+
         self.mox.VerifyAll()
 
     def test_call_expects_function_name(self):
@@ -105,7 +105,7 @@ class CoreTestCase(unittest.TestCase):
             pass
 
         self.adapter.connect()
-        for i in xrange(0, 4):
+        for i in range(0, 4):
             self.serializer.dumps(mox.IsA(dict)).AndReturn('')
             self.adapter.send(mox.IsA(str), mox.IsA(str), \
                     deferred=mox.IsA(Deferred)).AndReturn(Deferred())
@@ -134,7 +134,7 @@ class CoreTestCase(unittest.TestCase):
 
     def test_add_command_returns_instance_of_Core(self):
         self.assertTrue(isinstance(self.core.add_command(None, None), Core))
-    
+
     def test_del_command_required_1_arg(self):
         self.assertRaises(TypeError, self.core.add_command)
         self.core.add_command(None, None)
@@ -187,7 +187,7 @@ class CoreTestCase(unittest.TestCase):
         c = self.mox.CreateMockAnything()
         c(1, 'a', c='foo', d=[1,2,3], deferred=mox.IsA(Deferred))
         self.serializer.loads(rep).AndReturn(obj)
-        
+
         # test
         self.mox.ReplayAll()
 
