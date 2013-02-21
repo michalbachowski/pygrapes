@@ -84,7 +84,7 @@ class GrapeTestCase(unittest.TestCase):
     def test_init_omit_group_serialization_if_all_arguments_are_None(self):
         self.assertRaises(KeyError, partial(Grape(self.group, core=None, \
                 adapter=None, serializer=None).task, object))
-    
+
     def test_init_disallows_group_reinitialization(self):
         Grape(self.group, self.core)
         self.assertRaises(RuntimeError, partial(Grape, self.group, \
@@ -111,7 +111,7 @@ class GrapeTestCase(unittest.TestCase):
         g = Grape(self.group, self.core)
         self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertTrue(callable(g.task(object)))
-        
+
     def test_task_returns_decorator(self):
         self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.mox.ReplayAll()
@@ -139,7 +139,7 @@ class GrapeTestCase(unittest.TestCase):
         self.assertEquals(func(1, 2, 3), 'bar')
 
         self.mox.VerifyAll()
-    
+
     def test_task_allows_wrapped_functions_to_omit_deferred_input(self):
         callback = self.mox.CreateMockAnything()
         callback(6)
@@ -198,7 +198,7 @@ class GrapeTestCase(unittest.TestCase):
         g = Grape(self.group, self.core)
         self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertTrue(callable(g.async(object)))
-        
+
     def test_async_returns_decorator(self):
         self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.mox.ReplayAll()
@@ -299,7 +299,6 @@ class GrapeTestCase(unittest.TestCase):
         e.args = 'bar'
         self.mox.ReplayAll()
         fe = Grape(self.group).format_exception(e)
-        self.assertEquals(fe['message'], e.message)
         self.assertEquals(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
         self.mox.VerifyAll()
@@ -316,7 +315,6 @@ class GrapeTestCase(unittest.TestCase):
 
         self.mox.ReplayAll()
         fe = Grape(self.group).format_exception(e, exc_traceback)
-        self.assertEquals(fe['message'], e.message)
         self.assertEquals(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
         self.assertTrue(len(fe['traceback'])>0)
