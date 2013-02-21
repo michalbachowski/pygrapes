@@ -4,8 +4,8 @@
 ##
 # hack for loading modules
 #
-import _path
-_path.fix()
+from _path import fix, mock
+fix()
 
 ##
 # python standard library
