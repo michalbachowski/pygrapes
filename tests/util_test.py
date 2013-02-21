@@ -10,7 +10,6 @@ _path.fix()
 #
 from functools import partial
 import unittest
-import mox
 
 ##
 # pygrapes modules
@@ -19,12 +18,6 @@ from pygrapes.util import not_implemented
 
 
 class UtilTestCase(unittest.TestCase):
-
-    def setUp(self):
-        self.mox = mox.Mox()
-
-    def tearDown(self):
-        self.mox.UnsetStubs()
 
     def test_not_implemented_expects_one_arg(self):
         self.assertRaises(TypeError, not_implemented)
