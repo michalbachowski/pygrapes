@@ -10,6 +10,12 @@ class Abstract(object):
     Base abstract class for all adapters
     """
 
+    def __init__(self, *args, **kwargs):
+        """
+        Class initialization
+        """
+        self._listeners = {}
+
     def serve(self):
         """
         Starts adapter in serving mode
@@ -36,14 +42,16 @@ class Abstract(object):
         When message with given route was received given callback is called
         with 'deferred' keyword argument that is used to pass back response.
         """
-        raise NotImplementedError()
+        self._listeners[route] = callback
+        return self
     
     def detach_listener(self, route):
         """
         Method to be implemented by all adapters.
         Unbinds callback from message with given route.
         """
-        raise NotImplementedError()
+        del self._listeners[route]
+        return self
 
     def ack(self, message):
         """
