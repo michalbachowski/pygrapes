@@ -32,11 +32,11 @@ class UtilTestCase(unittest.TestCase):
         try:
             not_implemented('foo')()
         except RuntimeError as e:
-            msg = e.message
+            msg = e.args[0]
         else:
             msg = 'bar'
 
-        self.assertEquals('foo', msg)
+        self.assertEqual('foo', msg)
 
 
 if "__main__" == __name__:
