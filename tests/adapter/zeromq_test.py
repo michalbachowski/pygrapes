@@ -16,7 +16,10 @@ import mox
 
 ##
 # ZeroMQ modules
-import zmq
+try:
+    import zmq
+except ImportError:
+    zmq = None
 
 ##
 # promise modules
@@ -27,7 +30,7 @@ from promise import Deferred
 #
 from pygrapes.adapter import Zmq
 
-
+@unittest.skipIf(zmq is None, 'Missing zmq Python library')
 class ZmqAdapterTestCase(unittest.TestCase):
 
     def setUp(self):
