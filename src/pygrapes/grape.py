@@ -124,5 +124,5 @@ class Grape(object):
             exc_traceback = tb
         else:
             exc_type, exc_value, exc_traceback = sys.exc_info()
-        return {'message': exception.message, 'args': exception.args, \
+        return {'args': exception.args, \
                 'traceback': traceback.extract_tb(exc_traceback)}
