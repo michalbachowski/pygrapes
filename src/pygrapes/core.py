@@ -56,13 +56,12 @@ class Core(object):
         Function should be given as a string.
         """
         self.connect()
-        d2 = Deferred()
-
-        d1 = Deferred(partial(self._adapter.send, str(command), \
-                self._prepare_msg(args, kwargs)))\
-            .then(partial(self._unserialize, d2.resolve), 
-                    partial(self._unserialize, d2.reject))
-        return d2.promise()
+        d = Deferred()
+        Deferred(partial(self._adapter.send, str(command),
+                         self._prepare_msg(args, kwargs)))\
+            .then(partial(self._unserialize, d.resolve),
+                    partial(self._unserialize, d.reject))
+        return d.promise()
 
     def _unserialize(self, callback, message):
         """
@@ -89,11 +88,11 @@ class Core(object):
         Calls given command with given data
         """
         tmp = self._parse_msg(message)
-        d2 = Deferred()
-        d1 = Deferred(partial(callback, *tmp['args'], **tmp['kwargs']))\
-                .then(partial(self._serialize, d2.resolve), 
-                        partial(self._serialize, d2.reject))
-        return d2.promise()
+        d = Deferred()
+        Deferred(partial(callback, *tmp['args'], **tmp['kwargs']))\
+                .then(partial(self._serialize, d.resolve),
+                        partial(self._serialize, d.reject))
+        return d.promise()
 
     def _serialize(self, callback, *args, **kwargs):
         """
