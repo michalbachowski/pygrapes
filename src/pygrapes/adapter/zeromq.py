@@ -74,4 +74,4 @@ class Zmq(Abstract):
         """
         Unbinds callback from message with given route.
         """
-        self._listeners[route] = callback
+        del self._listeners[route]
