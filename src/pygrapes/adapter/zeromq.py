@@ -61,7 +61,7 @@ class Zmq(Abstract):
         """
         self._socket.send(route, zmq.SNDMORE)
         self._socket.send(message)
-        deferred.resolve(self._socket.recv())
+        return deferred.resolve(self._socket.recv())
 
     def attach_listener(self, route, callback):
         """
