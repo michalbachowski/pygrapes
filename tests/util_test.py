@@ -9,7 +9,6 @@ _path.fix()
 ##
 # python standard library
 #
-from functools import partial
 import unittest
 import mox
 
