@@ -35,12 +35,9 @@ class AbstractAdapterTestCase(unittest.TestCase):
 
     def test_method_send_may_be_implemented(self):
         self.assertEquals(Abstract().serve(), None)
- 
+
     def test_method_send_exists(self):
         self.assertTrue(hasattr(Abstract(), 'send'))
-
-    def test_method_send_expects_3_args_1(self):
-        self.assertRaises(TypeError, Abstract().send)
 
     def test_method_send_expects_3_args_1(self):
         self.assertRaises(TypeError, Abstract().send)
@@ -54,7 +51,7 @@ class AbstractAdapterTestCase(unittest.TestCase):
     def test_method_send_must_be_implemented(self):
         self.assertRaises(NotImplementedError, \
                 partial(Abstract().send, None, None, None))
-    
+
     def test_method_attach_listener_exists(self):
         self.assertTrue(hasattr(Abstract(), 'attach_listener'))
 
@@ -68,9 +65,9 @@ class AbstractAdapterTestCase(unittest.TestCase):
         self.assertFalse(Abstract().attach_listener(None, None) is None)
 
     def test_attach_listener_returns_instance_of_abstract(self):
-        self.assertTrue(isinstance(Abstract().attach_listener(None, None), 
+        self.assertTrue(isinstance(Abstract().attach_listener(None, None),
             Abstract))
-    
+
     def test_method_detach_listener_exists(self):
         self.assertTrue(hasattr(Abstract(), 'detach_listener'))
 
