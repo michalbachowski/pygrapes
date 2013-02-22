@@ -10,7 +10,6 @@ _path.fix()
 ##
 # python standard library
 #
-from functools import partial
 import unittest
 
 ##
@@ -37,7 +36,7 @@ class MsgPackSerializerTestCase(unittest.TestCase):
         self.assertRaises(TypeError, MsgPack().loads)
 
     def test_loads_return_object(self):
-        self.assertTrue(isinstance(MsgPack().loads(MsgPack().dumps([1,3,2])), 
+        self.assertTrue(isinstance(MsgPack().loads(MsgPack().dumps([1,3,2])),
             list))
 
 
