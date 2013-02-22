@@ -128,31 +128,6 @@ class CoreTestCase(unittest.TestCase):
         self.adapter.detach_listener.assert_called_once_with('None')
 
     def test_callbacks_are_called_with_all_input_arguments(self):
-        """
-
-        # serialization
-        obj = {'args': [1, 'a'], 'kwargs': {'c': 'foo', 'd': [1,2,3]}}
-        rep = '{"args": [1, "a"], "kwargs": {"c": "foo", "d": [1,2,3]}}'
-        # adapter
-        self._adapter.attach_listener(mox.IsA(str), mox.IsA(partial))\
-                .WithSideEffects(al)
-        self._serializer.dumps(mox.IsA(dict)).AndReturn(rep)
-        self._adapter.connect()
-        self._adapter.send(mox.IsA(str), rep, deferred=mox.IsA(Deferred))\
-                .WithSideEffects(snd)
-        # callback
-        c = self.mox.CreateMockAnything()
-        c(1, 'a', c='foo', d=[1,2,3], deferred=mox.IsA(Deferred))
-        self._serializer.loads(rep).AndReturn(obj)
-
-        # test
-        self.mox.ReplayAll()
-
-        self._core.add_command('foo', c)
-        self._core.call('foo', [1, 'a'], {'c': 'foo', 'd': [1,2,3]})
-
-        self.mox.VerifyAll()
-        """
         # adapter
         callbacks = {}
         def attach(route, cb):
