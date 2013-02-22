@@ -17,14 +17,9 @@ import random
 import string
 
 ##
-# other modules
-#
-from promise import Promise, Deferred
-
-##
 # pygrapes modules
 #
-from mock_helper import *
+from mock_helper import IsA, IsCallable
 from pygrapes.core import Core
 from pygrapes.grape import Grape, serve, remove_task_group
 from pygrapes import adapter
@@ -278,7 +273,7 @@ class GrapeTestCase(unittest.TestCase):
         e = mock.MagicMock()
         e.message = 'foo'
         e.args = 'bar'
-        
+
         fe = Grape(self.group).format_exception(e)
         self.assertEquals(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
