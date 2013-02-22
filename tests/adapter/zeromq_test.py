@@ -35,10 +35,6 @@ from pygrapes.adapter import Zmq
 class ZmqAdapterTestCase(unittest.TestCase):
 
     def setUp(self):
-        self._ctx = self.mox.CreateMock(zmq.Context)
-        self._socket = self.mox.CreateMock(zmq.Socket)
-        self._deferred = self.mox.CreateMock(Deferred)
-
         self.ctx = mock.Mock()
         self.socket = mock.Mock()
         self.deferred = mock.Mock()
@@ -48,9 +44,6 @@ class ZmqAdapterTestCase(unittest.TestCase):
 
     def setUpBind(self):
         self.ctx.socket = mock.MagicMock(return_value=self.socket)
-
-    def tearDown(self):
-        self.mox.UnsetStubs()
 
     def test_init_expects_no_args(self):
         self.assertFalse(Zmq() is None)
