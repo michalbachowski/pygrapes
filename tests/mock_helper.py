@@ -4,7 +4,7 @@
 import collections
 
 
-__all__ = ['IsA', 'IsCallable']
+__all__ = ['IsA', 'IsCallable', 'results']
 
 
 class IsA(object):
@@ -20,3 +20,13 @@ class IsCallable(IsA):
 
     def __init__(self):
         self.cls = collections.Callable
+
+
+def results(*args):
+    results = list(args)
+    def looper(*args):
+        r = results.pop(0)
+        if isinstance(r, BaseException):
+            raise r
+        return r
+    return looper
