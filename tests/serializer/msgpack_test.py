@@ -27,7 +27,7 @@ class MsgPackSerializerTestCase(unittest.TestCase):
         self.assertRaises(TypeError, MsgPack().dumps)
 
     def test_dumps_return_string(self):
-        self.assertTrue(isinstance(MsgPack().dumps([1,3,2]), str))
+        self.assertTrue(isinstance(MsgPack().dumps([1,3,2]), bytes))
 
     def test_method_loads_exists(self):
         self.assertTrue(hasattr(MsgPack(), 'loads'))
