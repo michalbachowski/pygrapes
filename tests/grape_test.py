@@ -4,8 +4,8 @@
 ##
 # hack for loading modules
 #
-import _path
-_path.fix()
+from _path import fix, mock
+fix()
 
 ##
 # python standard library
@@ -13,7 +13,6 @@ _path.fix()
 from functools import partial
 import sys
 import unittest
-import mox
 import random
 import string
 
@@ -25,6 +24,7 @@ from promise import Promise, Deferred
 ##
 # pygrapes modules
 #
+from mock_helper import *
 from pygrapes.core import Core
 from pygrapes.grape import Grape, serve, remove_task_group
 from pygrapes import adapter
@@ -34,15 +34,13 @@ from pygrapes import serializer
 class GrapeTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.mox = mox.Mox()
         # generate unique group name
         # groups are global (intended) so ensure there is no name conflict
         self.group = ''.join([random.choice(string.letters + string.digits) \
                 for i in xrange(0, 20)])
-        self.core = self.mox.CreateMockAnything()
+        self.core = mock.Mock()
 
     def tearDown(self):
-        self.mox.UnsetStubs()
         try:
             remove_task_group(self.group)
         except:
@@ -102,33 +100,26 @@ class GrapeTestCase(unittest.TestCase):
 
     def test_callable_returned_by_task_expects_input_with_name_attribute(self):
         g = Grape(self.group, self.core)
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertRaises(AttributeError, partial(g.task, None))
         self.assertRaises(AttributeError, partial(g.task, ''))
         g.task(object)
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_callable_returned_by_task_returns_callable(self):
         g = Grape(self.group, self.core)
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertTrue(callable(g.task(object)))
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_task_returns_decorator(self):
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
-        self.mox.ReplayAll()
-
         # group must be set up
         g = Grape(self.group, self.core)
         @g.task
         def foo():
             pass
-
-        self.mox.VerifyAll()
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_calls_to_wrapped_functions_are_forwarded_to_core_instance(self):
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
-        self.core.call(mox.IsA(str), (1, 2, 3), {}).AndReturn('bar')
-        self.mox.ReplayAll()
-
+        self.core.call = mock.MagicMock(return_value='bar')
         # group must be set up
         g = Grape(self.group, self.core)
 
@@ -137,13 +128,13 @@ class GrapeTestCase(unittest.TestCase):
             pass
 
         self.assertEquals(func(1, 2, 3), 'bar')
-
-        self.mox.VerifyAll()
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
+        self.core.call.assert_called_once_with(IsA(str), (1, 2, 3), {})
 
     def test_task_allows_wrapped_functions_to_omit_deferred_input(self):
-        callback = self.mox.CreateMockAnything()
-        callback(6)
-        self.mox.ReplayAll()
+        callback = mock.MagicMock()
+
+        # using existing implementations - didn`t want to implement them here
         c = Core(adapter.Local(), serializer.Json())
 
         g = Grape(self.group, c)
@@ -156,12 +147,11 @@ class GrapeTestCase(unittest.TestCase):
 
         # verify promise state
         self.assertTrue(p.resolved)
-        self.mox.VerifyAll()
+        callback.assert_called_once_with(6)
 
     def test_task_takes_care_of_exceptions(self):
-        callback = self.mox.CreateMockAnything()
-        callback(exception=mox.IsA(dict))
-        self.mox.ReplayAll()
+        callback = mock.MagicMock()
+        # using existing implementations - didn`t want to implement them here
         c = Core(adapter.Local(), serializer.Json())
 
         g = Grape(self.group, c)
@@ -175,7 +165,7 @@ class GrapeTestCase(unittest.TestCase):
         # verify promise state
         self.assertFalse(p.resolved)
         self.assertTrue(p.rejected)
-        self.mox.VerifyAll()
+        callback.assert_called_once_with(exception=IsA(dict))
 
     def test_async_expects_argument(self):
         self.assertRaises(TypeError, Grape(self.group).async)
@@ -189,32 +179,27 @@ class GrapeTestCase(unittest.TestCase):
 
     def test_callable_returned_by_async_expects_additional_input(self):
         g = Grape(self.group, self.core)
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertRaises(AttributeError, partial(g.async, None))
         self.assertRaises(AttributeError, partial(g.async, ''))
         g.async(object)
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_callable_returned_by_async_returns_callable(self):
         g = Grape(self.group, self.core)
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
         self.assertTrue(callable(g.async(object)))
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_async_returns_decorator(self):
-        self.core.add_command(mox.IsA(str), mox.IsA(object))
-        self.mox.ReplayAll()
-
         # group must be set up
         g = Grape(self.group, self.core)
         @g.async
         def foo():
             pass
-
-        self.mox.VerifyAll()
+        self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
 
     def test_async_forces_wrapped_functions_to_expect_deferred_named_arg(self):
-        callback = self.mox.CreateMockAnything()
-        callback(6)
-        self.mox.ReplayAll()
+        callback = mock.MagicMock()
+        # using existing implementations - didn`t want to implement them here
         c = Core(adapter.Local(), serializer.Json())
 
         g = Grape(self.group, c)
@@ -227,11 +212,11 @@ class GrapeTestCase(unittest.TestCase):
 
         # verify promise state
         self.assertTrue(p.resolved)
-        self.mox.VerifyAll()
+        callback.assert_called_once_with(6)
 
     def test_async_expects_wrapped_functions_to_manually_handle_deferred(self):
-        callback = self.mox.CreateMockAnything()
-        self.mox.ReplayAll()
+        callback = mock.MagicMock()
+        # using existing implementations - didn`t want to implement them here
         c = Core(adapter.Local(), serializer.Json())
 
         g = Grape(self.group, c)
@@ -246,7 +231,7 @@ class GrapeTestCase(unittest.TestCase):
         self.assertFalse(p.resolved)
         self.assertFalse(p.rejected)
         self.assertFalse(p.cancelled)
-        self.mox.VerifyAll()
+        self.assertEqual(callback.call_count, 0)
 
     def test_remove_task_group_expects_one_arg(self):
         self.assertRaises(TypeError, remove_task_group)
@@ -266,24 +251,20 @@ class GrapeTestCase(unittest.TestCase):
         serve('foo')
 
     def test_serve_calls_on_each_task_group_core_serve_method(self):
-        self.core.serve()
-        self.mox.ReplayAll()
-
         Grape(self.group, self.core)
         serve()
-
-        self.mox.VerifyAll()
+        self.core.serve.assert_called_once_with()
 
     def test_serve_calls_on_given_task_group_core_serve_method(self):
-        c = self.mox.CreateMockAnything()
-        self.core.serve()
-        self.mox.ReplayAll()
+        c = mock.MagicMock()
 
         g = Grape(self.group, self.core)
         g = Grape('foo', c)
         serve(self.group)
 
-        self.mox.VerifyAll()
+        self.core.serve.assert_called_once_with()
+        self.assertEqual(c.call_count, 0)
+        self.assertEqual(c.serve.call_count, 0)
         remove_task_group('foo')
 
     def test_format_exception_expects_1_arg(self):
@@ -294,41 +275,37 @@ class GrapeTestCase(unittest.TestCase):
                 partial(Grape(self.group).format_exception, None, None))
 
     def test_format_exception_expects_exception_as_input(self):
-        e = self.mox.CreateMockAnything()
+        e = mock.MagicMock()
         e.message = 'foo'
         e.args = 'bar'
-        self.mox.ReplayAll()
+        
         fe = Grape(self.group).format_exception(e)
         self.assertEquals(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
-        self.mox.VerifyAll()
 
     def test_format_exception_allows_to_pass_traceback(self):
-        e = self.mox.CreateMockAnything()
+        e = mock.MagicMock()
         e.message = 'foo'
         e.args = 'bar'
+        # prepare valid traceback
         try:
             raise RuntimeError('a')
         except:
             pass
         exc_type, exc_value, exc_traceback = sys.exc_info()
 
-        self.mox.ReplayAll()
         fe = Grape(self.group).format_exception(e, exc_traceback)
         self.assertEquals(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
         self.assertTrue(len(fe['traceback'])>0)
-        self.mox.VerifyAll()
 
     def test_format_exception_expects_traceback_to_be_valid(self):
-        e = self.mox.CreateMockAnything()
+        e = mock.MagicMock()
         e.message = 'foo'
         e.args = 'bar'
 
-        self.mox.ReplayAll()
         self.assertRaises(AttributeError, partial(
                 Grape(self.group).format_exception, e, 'f'))
-        self.mox.VerifyAll()
 
 
 if "__main__" == __name__:
