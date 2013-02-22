@@ -16,11 +16,12 @@ import unittest
 ##
 # other modules
 #
-from promise import Promise
+from promise import Promise, Deferred
 
 ##
 # pygrapes modules
 #
+from mock_helper import *
 from pygrapes  import Core
 
 
@@ -83,7 +84,8 @@ class CoreTestCase(unittest.TestCase):
         self.assertTrue(self.core.call('a') is not None)
         self.serializer.dumps.assert_called_once_with({'args': [], \
                 'kwargs': {}})
-        self.adapter.send.assert_called_once_with('a', '', deferred=mock.ANY)
+        self.adapter.send.assert_called_once_with('a', '', 
+                deferred=IsA(Deferred))
 
     def test_call_expects_list_of_args_or_dict_of_kwargs(self):
         self.assertFalse(self.core.call('abc') is None)
@@ -105,7 +107,7 @@ class CoreTestCase(unittest.TestCase):
     def test_add_command_calls_adapter(self):
         self.assertTrue(isinstance(self.core.add_command(None, None), Core))
         self.adapter.attach_listener.assert_called_once_with('None',
-                mock.ANY)
+                IsA(partial))
 
     def test_del_command_required_1_arg(self):
         self.assertRaises(TypeError, self.core.add_command)
@@ -172,7 +174,7 @@ class CoreTestCase(unittest.TestCase):
         self.core.add_command('foo', c).call('foo', vrs['args'], vrs['kwargs'])
 
         # verify
-        c.assert_called_once_with(*vrs['args'], deferred=mock.ANY,
+        c.assert_called_once_with(*vrs['args'], deferred=IsA(Deferred),
                 **vrs['kwargs'])
 
 
