@@ -4,33 +4,28 @@
 ##
 # hack for loading modules
 #
-import _path
-_path.fix()
+from _path import fix, mock
+fix()
 
 ##
 # python standard library
 #
 from functools import partial
 import unittest
-import mox
 
-##
-# promise modules
-from promise import Deferred
+
 ##
 # pygrapes modules
 #
+from mock_helper import IsA, IsCallable
 from pygrapes.adapter import Local
 
 
 class LocalAdapterTestCase(unittest.TestCase):
-    
-    def setUp(self):
-        self.mox = mox.Mox()
-        self.deferred = self.mox.CreateMock(Deferred)
 
-    def tearDown(self):
-        self.mox.UnsetStubs()
+    def setUp(self):
+        self.deferred = mock.Mock()
+        self.c = mock.MagicMock()
 
     def test_detach_listener_raises_KeyError_when_route_does_not_exist(self):
         l = Local()
@@ -41,48 +36,39 @@ class LocalAdapterTestCase(unittest.TestCase):
         self.assertRaises(KeyError, partial(l.send, 'foo', '', None))
 
     def test_send_calls_attached_callback(self):
-        c = self.mox.CreateMockAnything()
-        c('asd').AndReturn(self.deferred)
-        self.deferred.then(mox.IsA(object), mox.IsA(object))
-        d = self.mox.CreateMock(Deferred)
-        self.mox.ReplayAll()
-
+        self.c.return_value = self.deferred
         l = Local()
-        l.attach_listener('foo', c)
-        l.send('foo', 'asd', d)
+        l.attach_listener('foo', self.c)
+        l.send('foo', 'asd', self.deferred)
 
-        self.mox.VerifyAll()
+        self.c.assert_called_once_with('asd')
+        self.deferred.then.assert_called_once_with(IsCallable(), IsCallable())
 
     def test_attach_listener_overrides_handlers(self):
-        c_not_called = self.mox.CreateMockAnything()
-        c = self.mox.CreateMockAnything()
-        c('asd').AndReturn(self.deferred)
-        self.deferred.then(mox.IsA(object), mox.IsA(object))
-        d = self.mox.CreateMock(Deferred)
-        self.mox.ReplayAll()
+        c_not_called = mock.MagicMock()
+        self.c.return_value = self.deferred
 
         l = Local()
         l.attach_listener('foo', c_not_called)
-        l.attach_listener('foo', c)
-        l.send('foo', 'asd', d)
+        l.attach_listener('foo', self.c)
+        l.send('foo', 'asd', self.deferred)
 
-        self.mox.VerifyAll()
+        self.c.assert_called_once_with('asd')
+        self.assertEqual(c_not_called.call_count, 0)
 
     def test_send_expects_deferred(self):
-        c = self.mox.CreateMockAnything()
         def se(done, fail):
             done('asd')
-        c('asd').AndReturn(self.deferred)
-        self.deferred.then(mox.IsA(object), mox.IsA(object)).WithSideEffects(se)
-        d = self.mox.CreateMock(Deferred)
-        d.resolve(mox.IsA(str))
-        self.mox.ReplayAll()
+        self.c.return_value = self.deferred
+        self.deferred.then.side_effect=se
+        d = mock.Mock()
 
         l = Local()
-        l.attach_listener('foo', c)
+        l.attach_listener('foo', self.c)
         l.send('foo', 'asd', d)
-
-        self.mox.VerifyAll()
+        d.resolve.assert_called_once_with(IsA(str))
+        self.c.assert_called_once_with('asd')
+        self.deferred.then.assert_called_once_with(IsCallable(), IsCallable())
 
     def test_implements_all_methods_from_abstract_class(self):
         self.assertTrue(hasattr(Local(), 'serve'))
@@ -91,6 +77,7 @@ class LocalAdapterTestCase(unittest.TestCase):
         self.assertTrue(hasattr(Local(), 'ack'))
         self.assertTrue(hasattr(Local(), 'attach_listener'))
         self.assertTrue(hasattr(Local(), 'detach_listener'))
+
 
 if "__main__" == __name__:
     unittest.main()
