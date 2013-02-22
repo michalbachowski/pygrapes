@@ -31,8 +31,8 @@ class GrapeTestCase(unittest.TestCase):
     def setUp(self):
         # generate unique group name
         # groups are global (intended) so ensure there is no name conflict
-        self.group = ''.join([random.choice(string.letters + string.digits) \
-                for i in xrange(0, 20)])
+        self.group = ''.join([random.choice(string.ascii_letters + \
+                string.digits) for i in range(0, 20)])
         self.core = mock.Mock()
 
     def tearDown(self):
@@ -122,7 +122,7 @@ class GrapeTestCase(unittest.TestCase):
         def func(a, b, c):
             pass
 
-        self.assertEquals(func(1, 2, 3), 'bar')
+        self.assertEqual(func(1, 2, 3), 'bar')
         self.core.add_command.assert_called_once_with(IsA(str), IsCallable())
         self.core.call.assert_called_once_with(IsA(str), (1, 2, 3), {})
 
@@ -253,8 +253,8 @@ class GrapeTestCase(unittest.TestCase):
     def test_serve_calls_on_given_task_group_core_serve_method(self):
         c = mock.MagicMock()
 
-        g = Grape(self.group, self.core)
-        g = Grape('foo', c)
+        Grape(self.group, self.core)
+        Grape('foo', c)
         serve(self.group)
 
         self.core.serve.assert_called_once_with()
@@ -275,7 +275,7 @@ class GrapeTestCase(unittest.TestCase):
         e.args = 'bar'
 
         fe = Grape(self.group).format_exception(e)
-        self.assertEquals(fe['args'], e.args)
+        self.assertEqual(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
 
     def test_format_exception_allows_to_pass_traceback(self):
@@ -286,11 +286,11 @@ class GrapeTestCase(unittest.TestCase):
         try:
             raise RuntimeError('a')
         except:
+            exc_type, exc_value, exc_traceback = sys.exc_info()
             pass
-        exc_type, exc_value, exc_traceback = sys.exc_info()
 
         fe = Grape(self.group).format_exception(e, exc_traceback)
-        self.assertEquals(fe['args'], e.args)
+        self.assertEqual(fe['args'], e.args)
         self.assertTrue(isinstance(fe['traceback'], list))
         self.assertTrue(len(fe['traceback'])>0)
 

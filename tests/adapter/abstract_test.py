@@ -34,7 +34,7 @@ class AbstractAdapterTestCase(unittest.TestCase):
         Abstract().serve()
 
     def test_method_send_may_be_implemented(self):
-        self.assertEquals(Abstract().serve(), None)
+        self.assertEqual(Abstract().serve(), None)
 
     def test_method_send_exists(self):
         self.assertTrue(hasattr(Abstract(), 'send'))
