@@ -62,7 +62,7 @@ class ZmqAdapterTestCase(unittest.TestCase):
     def test_connects_expects_valid_context_instance(self):
         self.assertRaises(TypeError, Zmq().connect())
 
-    def test_connects_expects_valid_context_instance(self):
+    def test_connects_expects_valid_context_instance_1(self):
         self.setUpConnect()
         self.mox.ReplayAll()
 
