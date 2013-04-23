@@ -10,4 +10,4 @@ install:
     - "pip install msgpack-python"
     - "pip install http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3"
 
-script: tests/runtest.py -f
+script: make test
