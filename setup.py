@@ -7,11 +7,14 @@ from setuptools import setup
 import os
 del os.link
 
-setup(name='PyGrapes',\
-    version='0.1.0',\
-    description='Distributed Task Framework',\
-    license='New BSD License',\
-    author='Michał Bachowski',\
-    author_email='michal@bachowski.pl',\
-    package_dir={'': 'src'},\
-    py_modules=['pygrapes'])
+setup(name='PyGrapes',
+    url='https://github.com/michalbachowski/pygrapes',
+    version='0.1.0',
+    description='Distributed Task Framework',
+    license='New BSD License',
+    author='Michał Bachowski',
+    author_email='michal@bachowski.pl',
+    package_dir={'': 'src'},
+    py_modules=['pygrapes'],
+    install_requires=['PyPromise==1.0.3', 'msgpack-python'],
+    dependency_links = ['http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3'])

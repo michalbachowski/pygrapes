@@ -1,6 +1,0 @@
-[submodule "vendors/msgpack"]
-	path = vendors/msgpack
-	url = git://github.com/msgpack/msgpack-python.git
-[submodule "vendors/pypromise"]
-	path = vendors/pypromise
-	url = git://github.com/michalbachowski/pypromise.git
