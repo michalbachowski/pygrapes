@@ -1,32 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-# Copyright 2011 Michał Bachowski
-#
-# Licensed under the Apache License, Version 2.0 (the "License"); you may
-# not use this file except in compliance with the License. You may obtain
-# a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-# License for the specific language governing permissions and limitations
-# under the License.
-__author__ = "mib"
-__date__ = "$2011-01-22 12:02:41$"
-
 import uuid
-import json
-
 from amqplib import client_0_8 as amqp
 
-from pigeon.queue import QueueError, Adapter
-
-
-class AmqpError(QueueError):
-	pass
 
 class Amqp(Adapter):
     amqp			= None
@@ -128,7 +104,30 @@ class Amqp(Adapter):
             exchange	= self.exchange,
             routing_key	= self.route
         )
+    
+    def send(self, route, message, deferred):
+        """
+        Sends message to given route. Accepts 'deferred' keyword argument.
+        """
+        pass
 
-    def ack( self, message ):
+    def attach_listener(self, route, callback):
+        """
+        Binds callback with message with given route.
+        When message with given route was received given callback is called
+        with 'deferred' keyword argument that is used to pass back response.
+        """
+        pass
+    
+    def detach_listener(self, route):
+        """
+        Unbinds callback from message with given route.
+        """
+        pass
+
+    def ack(self, message):
+        """
+        Sends information that message was processed.
+        """
         self._init()
         self.channel.basic_ack(message.delivery_tag)

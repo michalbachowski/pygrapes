@@ -9,4 +9,5 @@
 [run]
 branch = True
 omit =
-    */tests/*
+    */test/*
+    */dist-packages/*
