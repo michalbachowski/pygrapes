@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
+from setuptools import setup
+
+# monkey patch os.link to force using symlinks
+import os
+del os.link
 
 setup(name='PyGrapes',\
     version='0.1.0',\
