@@ -14,7 +14,7 @@ setup(name='PyGrapes',
     license='New BSD License',
     author='Michał Bachowski',
     author_email='michal@bachowski.pl',
+    packages=['pygrapes'],
     package_dir={'': 'src'},
-    py_modules=['pygrapes'],
     install_requires=['PyPromise==1.0.3', 'msgpack-python'],
     dependency_links = ['http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3'])
