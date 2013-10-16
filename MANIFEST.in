@@ -1,3 +1,2 @@
 include README.md LICENSE.txt setup.py 
-recursive-include test *.py
-include src/pyevent.py
+recursive-include src *.py
