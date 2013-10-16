@@ -5,9 +5,6 @@ from __future__ import absolute_import
 import sys
 import unittest
 
-import _path
-_path.fix()
-
 TEST_MODULES = ['core_test', 'grape_test', 'util_test', \
         'serializer.abstract_test', 'serializer.json_test', \
         'serializer.msgpack_test', 'adapter.abstract_test', \

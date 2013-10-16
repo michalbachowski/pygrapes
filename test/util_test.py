@@ -2,13 +2,11 @@
 # -*- coding: utf-8 -*-
 
 # hack for loading modules
-import _path
-import collections
-_path.fix()
 
 ##
 # python standard library
 #
+import collections
 import unittest
 
 ##

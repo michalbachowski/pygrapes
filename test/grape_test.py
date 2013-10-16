@@ -2,12 +2,6 @@
 # -*- coding: utf-8 -*-
 
 ##
-# hack for loading modules
-#
-from _path import fix, mock
-fix()
-
-##
 # python standard library
 #
 from functools import partial
@@ -17,9 +11,13 @@ import random
 import string
 
 ##
+# test hepers
+#
+from testutils import mock, IsA, IsCallable
+
+##
 # pygrapes modules
 #
-from mock_helper import IsA, IsCallable
 from pygrapes.core import Core
 from pygrapes.grape import Grape, serve, remove_task_group
 from pygrapes import adapter

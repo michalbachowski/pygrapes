@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 ##
-# hack for loading modules
+# test hepers
 #
-from _path import fix, mock
-fix()
+from testutils import mock, IsA, IsCallable
 
 ##
 # python standard library
@@ -17,7 +16,6 @@ import unittest
 ##
 # pygrapes modules
 #
-from mock_helper import IsA, IsCallable
 from pygrapes.adapter import Local
 
 

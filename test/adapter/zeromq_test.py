@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 ##
-# hack for loading modules
+# test hepers
 #
-from _path import fix, mock
-fix()
+from testutils import mock
 
 ##
 # python standard library
@@ -21,13 +20,9 @@ except ImportError:
     zmq = None
 
 ##
-# promise modules
-from promise import Deferred
-
-##
 # pygrapes modules
 #
-from mock_helper import IsA, IsCallable, results
+from mock_helper import results
 from pygrapes.adapter import Zmq
 
 

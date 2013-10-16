@@ -2,12 +2,6 @@
 # -*- coding: utf-8 -*-
 
 ##
-# hack for loading modules
-#
-from _path import fix, mock
-fix()
-
-##
 # python standard library
 #
 from functools import partial
@@ -19,9 +13,13 @@ import unittest
 from promise import Promise, Deferred
 
 ##
+# test hepers
+#
+from testutils import mock, IsA
+
+##
 # pygrapes modules
 #
-from mock_helper import *
 from pygrapes  import Core
 
 
@@ -84,7 +82,7 @@ class CoreTestCase(unittest.TestCase):
         self.assertTrue(self.core.call('a') is not None)
         self.serializer.dumps.assert_called_once_with({'args': [], \
                 'kwargs': {}})
-        self.adapter.send.assert_called_once_with('a', '', 
+        self.adapter.send.assert_called_once_with('a', '',
                 deferred=IsA(Deferred))
 
     def test_call_expects_list_of_args_or_dict_of_kwargs(self):
