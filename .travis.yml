@@ -5,8 +5,7 @@ python:
   - "3.2"
 
 install:
-    - "pip install --use-mirrors mock"
-    - "pip install msgpack-python"
-    - "pip install http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3"
+    - "pip install -rdev_requirements.txt"
+    - "pip install -rrequirements.txt"
 
 script: make test
