@@ -2,10 +2,18 @@ language: python
 
 python:
     - "2.7"
+    - "3.2"
 
 env:
     - TOX_ENV=py27
     - TOX_ENV=py32
+
+matrix:
+  exclude:
+    - python: "2.7"
+      env: TOX_ENV=py32 
+    - python: "3.2"
+      env: TOX_ENV=py27 
 
 install:
     - pip install tox
