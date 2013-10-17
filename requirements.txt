@@ -1,2 +1,2 @@
 msgpack-python>=0.3.0
-http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3
+http://github.com/michalbachowski/pypromise/archive/1.1.1.zip#egg=PyPromise-1.1.1

@@ -17,5 +17,5 @@ setup(name='PyGrapes',
     packages=['pygrapes', 'pygrapes.adapter', 'pygrapes.serializer'],
     package_dir={'': 'src', 'adatper': 'src/adapter',
         'serializer': 'src/serializer'},
-    install_requires=['PyPromise==1.0.3', 'msgpack-python>=0.3.0'],
-    dependency_links = ['http://github.com/michalbachowski/pypromise/archive/1.0.3.zip#egg=PyPromise-1.0.3'])
+    install_requires=['PyPromise==1.1.1', 'msgpack-python>=0.3.0'],
+    dependency_links = ['http://github.com/michalbachowski/pypromise/archive/1.1.1.zip#egg=PyPromise-1.1.1'])
